@@ -6,17 +6,39 @@
     GRUPO:  PAULA GIBRIM - ES90366
             RENAN XXXX - ESXXXXXX
             GABRIEL XXXX - ESXXXXXX
-            
+
     MODIFICAÇÃO: 12/06/2019
 */
 
 #include <iostream>
 using namespace std;
 
-//**PARTE 1 - MAPA E PERSONAGENS**//
-
-//ESCOLHA DE MAPAS//
-int sel_mapa(){
-    cout << "Escolha o mapa"
+// Inclui o arquivo de cabeçalho da biblioteca Allegro 5
+#include <allegro5/allegro.h>
+ 
+// Função main
+int main(void)
+{
+    // Variável representando a janela principal
+    ALLEGRO_DISPLAY *window = NULL;
+ 
+    // Inicializamos a biblioteca
+    al_init();
+ 
+    // Criamos a nossa janela - dimensões de 640x480 px
+    window = al_create_display(640, 480);
+ 
+    // Preenchemos a janela de branco
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+ 
+    // Atualiza a tela
+    al_flip_display();
+ 
+    // Segura a execução por 10 segundos
+    al_rest(10.0);
+ 
+    // Finaliza a janela
+    al_destroy_display(window);
+ 
+    return 0;
 }
-

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const float FPS = 5;
+const float FPS = 60;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
@@ -48,8 +48,8 @@ ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa   = NULL;
 ALLEGRO_BITMAP *pacman   = NULL;
-int i = 15, j = 12; //posição inicial do Pacman na matriz
-int q = 20; //tamanho de cada célula no mapa
+int i = 15, j = 12; //posiï¿½ï¿½o inicial do Pacman na matriz
+int q = 20; //tamanho de cada cï¿½lula no mapa
 int posy = i*q;
 int posx = j*q;
 

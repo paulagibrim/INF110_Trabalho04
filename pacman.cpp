@@ -67,7 +67,7 @@ ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
 ALLEGRO_BITMAP *splash_Screen = NULL;
-//ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_FONT *fonte = NULL;
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
@@ -119,26 +119,26 @@ int inicializa() {
 	splash_Screen = al_load_bitmap("imagens/Splash.bmp");
 
 	if (!splash_Screen) {
-		cout << "Falha ao carregar tela inicial";
+		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
 
 	
-	/*  // Fonte
+	  // Fonte
 	al_init_font_addon();
 	al_init_ttf_addon();
 
 	fonte = al_load_ttf_font("MISFITS_.TTF", 72, 0);
 
 	if (!fonte) {
-		cout << "Falha ao carregar fonte";
+		cout << "Falha ao carregar fonte" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
 
 	al_draw_text(fonte, al_map_rgb(255, 255, 255),  (SCREEN_H / 2), (SCREEN_W / 4), ALLEGRO_ALIGN_CENTRE, "TA OKD!");
-	 */al_draw_bitmap(splash_Screen, 0, 0, 0);
+	 al_draw_bitmap(splash_Screen, 0, 0, 0);
     
     /* if (key[KEY_ENTER]){
         al_destroy_bitmap(splash_Screen);

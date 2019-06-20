@@ -1,2 +1,2 @@
-# trabalho-pacman
-Quarto trabalho desenvolvido na disciplina INF110 - Programação I, da Universidade Federal de Viçosa.
+Documentação Do Allegro 5
+##https://liballeg.org/a5docs/5.2.4/index.html

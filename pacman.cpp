@@ -1,3 +1,15 @@
+//***************************QUARTO TRABALHO DE INF110****************************//
+/*
+    TRABALHO ELABORADO PELOS ALUNOS DA DISCIPLINA INF 110 DA UNIVERSIDADE FEDERAL DE
+    VIÇOSA EM 2019/I.
+
+    GRUPO:  PAULA GIBRIM - ES90366
+            RENAN LOPES  - ES97370
+            GABRIEL XXXX - ESXXXXXX
+
+    MODIFICAÇÃO: 20/06/2019
+*/
+
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <iostream>

@@ -67,7 +67,7 @@ ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
 ALLEGRO_BITMAP *splash_Screen = NULL;
-ALLEGRO_FONT *fonte = NULL;
+//ALLEGRO_FONT *fonte = NULL;
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
@@ -125,7 +125,7 @@ int inicializa() {
 	}
 
 	
-	// Fonte
+	/*  // Fonte
 	al_init_font_addon();
 	al_init_ttf_addon();
 
@@ -138,7 +138,7 @@ int inicializa() {
 	}
 
 	al_draw_text(fonte, al_map_rgb(255, 255, 255),  (SCREEN_H / 2), (SCREEN_W / 4), ALLEGRO_ALIGN_CENTRE, "TA OKD!");
-	al_draw_bitmap(splash_Screen, 0, 0, 0);
+	 */al_draw_bitmap(splash_Screen, 0, 0, 0);
     
     /* if (key[KEY_ENTER]){
         al_destroy_bitmap(splash_Screen);

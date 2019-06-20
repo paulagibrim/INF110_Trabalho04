@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const float FPS = 60;
+const float FPS = 10;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
@@ -48,8 +48,9 @@ ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa   = NULL;
 ALLEGRO_BITMAP *pacman   = NULL;
-int i = 15, j = 12; //posi��o inicial do Pacman na matriz
-int q = 20; //tamanho de cada c�lula no mapa
+ALLEGRO_BITMAP *splash_Screen = NULL;
+int i = 15, j = 12; //posisao inicial do Pacman na matriz
+int q = 20; //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
 
@@ -91,6 +92,21 @@ int inicializa() {
         return 0;
     }
 
+
+	// Splashscreen
+
+	splash_Screen = al_load_bitmap("Splash.bmp");
+	if (!splash_Screen) {
+		cout << "Falha ao carregar tela inicial";
+		al_destroy_display(display);
+		return 0;
+	}
+
+	al_draw_bitmap(splash_Screen, 0, 0, 0);
+	al_flip_display();
+	al_rest(5);
+	al_destroy_bitmap(splash_Screen);
+
     mapa = al_load_bitmap("map.bmp");
     if(!mapa)
     {
@@ -100,7 +116,7 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    pacman = al_load_bitmap("pacman.tga");
+    pacman = al_load_bitmap("pac.tga");
     if(!pacman)
     {
         cout << "Falha ao carregar o pacman!" << endl;

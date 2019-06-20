@@ -106,7 +106,7 @@ int inicializa() {
 
 	// Splashscreen
 
-	splash_Screen = al_load_bitmap("Splash.bmp");
+	splash_Screen = al_load_bitmap("/home/paula/Documentos/prog_i/trabalho-pacman/imagens/Splash.bmp");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial";
 		al_destroy_display(display);
@@ -118,7 +118,7 @@ int inicializa() {
 	al_rest(5);
 	al_destroy_bitmap(splash_Screen);
 
-    mapa = al_load_bitmap("map.bmp");
+    mapa = al_load_bitmap("/home/paula/Documentos/prog_i/trabalho-pacman/imagens/map.bmp");
     if(!mapa)
     {
         cout << "Falha ao carregar o mapa!" << endl;
@@ -127,7 +127,7 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    pacman = al_load_bitmap("pac.tga");
+    pacman = al_load_bitmap("/home/paula/Documentos/prog_i/trabalho-pacman/imagens/pac.tga");
     if(!pacman)
     {
         cout << "Falha ao carregar o pacman!" << endl;

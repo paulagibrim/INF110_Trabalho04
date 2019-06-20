@@ -24,7 +24,7 @@ const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
 enum MYKEYS{
-    KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
+    KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_ENTER
 };
 
 //matriz definindo mapa do jogo: 1 representa paredes, 0 representa corredor
@@ -63,8 +63,9 @@ char MAPA[26][26] =
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
-ALLEGRO_BITMAP *mapa   = NULL;
-ALLEGRO_BITMAP *pacman   = NULL;
+ALLEGRO_BITMAP *mapa = NULL;
+ALLEGRO_BITMAP *pacman = NULL;
+ALLEGRO_BITMAP *ball = NULL;
 ALLEGRO_BITMAP *splash_Screen = NULL;
 ALLEGRO_FONT *fonte = NULL;
 
@@ -138,9 +139,15 @@ int inicializa() {
 
 	al_draw_text(fonte, al_map_rgb(255, 255, 255),  (SCREEN_H / 2), (SCREEN_W / 4), ALLEGRO_ALIGN_CENTRE, "TA OKD!");
 	al_draw_bitmap(splash_Screen, 0, 0, 0);
-	al_flip_display();
+    
+    /* if (key[KEY_ENTER]){
+        al_destroy_bitmap(splash_Screen);
+    } */
+    al_flip_display();
 	al_rest(5);
 	al_destroy_bitmap(splash_Screen);
+    
+	
 
     mapa = al_load_bitmap("imagens/map.bmp");
     if(!mapa)
@@ -160,10 +167,19 @@ int inicializa() {
     }
     al_draw_bitmap(pacman,posx,posy,0);
 
+    ball = al_load_bitmap("imagens/bolinha.tga");
+    if(!ball)
+    {
+        cout << "Falha ao carregar as bolinhas!" << endl;
+        al_destroy_display(display);
+        return 0;
+    }
+    al_draw_bitmap(ball,posx,posy,0);
+
     event_queue = al_create_event_queue();
     if(!event_queue)
     {
-        cout << "Falha ao criar a fila de eventos" << endl;
+        cout << "Falha ao criar a  fila de eventos" << endl;
         al_destroy_display(display);
         al_destroy_timer(timer);
         return 0;

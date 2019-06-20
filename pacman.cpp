@@ -129,7 +129,7 @@ int inicializa() {
 	al_init_font_addon();
 	al_init_ttf_addon();
 
-	fonte = al_load_ttf_font("MISFITS_.TTF", 72, 0);
+	fonte = al_load_ttf_font("fontes/MISFITS_.TTF", 72, 0);
 
 	if (!fonte) {
 		cout << "Falha ao carregar fonte" << endl;
@@ -137,7 +137,7 @@ int inicializa() {
 		return 0;
 	}
 
-	al_draw_text(fonte, al_map_rgb(255, 255, 255),  (SCREEN_H / 2), (SCREEN_W / 4), ALLEGRO_ALIGN_CENTRE, "TA OKD!");
+	al_draw_text(fonte, al_map_rgb(0, 0, 0),  (SCREEN_H / 2), (SCREEN_W / 2), ALLEGRO_ALIGN_CENTRE, "TA OK MANO!");
 	 al_draw_bitmap(splash_Screen, 0, 0, 0);
     
     /* if (key[KEY_ENTER]){

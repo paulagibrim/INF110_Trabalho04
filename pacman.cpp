@@ -25,6 +25,8 @@ enum MYKEYS{
 };
 
 //matriz definindo mapa do jogo: 1 representa paredes, 0 representa corredor
+
+//ATENÇÃO! precisa atualizar a matriz
 char MAPA[26][26] =
 {
     "1111111111111111111111111",
@@ -106,7 +108,7 @@ int inicializa() {
 
 	// Splashscreen
 
-	splash_Screen = al_load_bitmap("Splash.bmp");
+	splash_Screen = al_load_bitmap("imagens/Splash.bmp");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial";
 		al_destroy_display(display);
@@ -118,7 +120,7 @@ int inicializa() {
 	al_rest(5);
 	al_destroy_bitmap(splash_Screen);
 
-    mapa = al_load_bitmap("map.bmp");
+    mapa = al_load_bitmap("imagens/map.bmp");
     if(!mapa)
     {
         cout << "Falha ao carregar o mapa!" << endl;
@@ -127,7 +129,7 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    pacman = al_load_bitmap("pac.tga");
+    pacman = al_load_bitmap("imagens/pac.tga");
     if(!pacman)
     {
         cout << "Falha ao carregar o pacman!" << endl;

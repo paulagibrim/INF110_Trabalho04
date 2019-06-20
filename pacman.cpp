@@ -8,8 +8,7 @@ const float FPS = 10;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
-enum MYKEYS
-{
+enum MYKEYS{
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 };
 

@@ -12,6 +12,9 @@
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_font.h>
+
 #include <iostream>
 
 using namespace std;
@@ -56,14 +59,17 @@ char MAPA[26][26] =
     "1111111111111111111111111",
 };
 
+
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa   = NULL;
 ALLEGRO_BITMAP *pacman   = NULL;
 ALLEGRO_BITMAP *splash_Screen = NULL;
-int i = 15, j = 12; //posisao inicial do Pacman na matriz
-int q = 20; //tamanho de cada celula no mapa
+ALLEGRO_FONT *fonte = NULL;
+
+int i = 15, j = 12;  //posisao inicial do Pacman na matriz
+int q = 20;         //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
 
@@ -108,13 +114,29 @@ int inicializa() {
 
 	// Splashscreen
 
+	
 	splash_Screen = al_load_bitmap("imagens/Splash.bmp");
+
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial";
 		al_destroy_display(display);
 		return 0;
 	}
 
+	
+	// Fonte
+	al_init_font_addon();
+	al_init_ttf_addon();
+
+	fonte = al_load_ttf_font("MISFITS_.TTF", 72, 0);
+
+	if (!fonte) {
+		cout << "Falha ao carregar fonte";
+		al_destroy_display(display);
+		return 0;
+	}
+
+	al_draw_text(fonte, al_map_rgb(255, 255, 255),  (SCREEN_H / 2), (SCREEN_W / 4), ALLEGRO_ALIGN_CENTRE, "TA OKD!");
 	al_draw_bitmap(splash_Screen, 0, 0, 0);
 	al_flip_display();
 	al_rest(5);

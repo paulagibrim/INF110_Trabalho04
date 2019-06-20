@@ -59,6 +59,7 @@ ALLEGRO_BITMAP* pacmanfechadoleft = NULL;
 ALLEGRO_BITMAP* pacmanfechadoright = NULL;
 ALLEGRO_BITMAP* pacmanfechadodown = NULL;
 ALLEGRO_BITMAP* bolinha = NULL;
+
 int i = 15, j = 12; //posi��o inicial do Pacman na matriz
 int q = 20; //tamanho de cada c�lula no mapa
 int posy = i * q;

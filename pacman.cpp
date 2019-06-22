@@ -36,7 +36,7 @@ char MAPA[26][26] =
     "1222222221111111222222221",
     "1211111121111111211111121",
     "1211111122222222211111121",
-    "1222222221111111222222221",
+    "1222222221111111222232221",
     "1112111121111111211112111",
     "1222111122221222211112221",
     "1212111111121211111112121",
@@ -48,13 +48,13 @@ char MAPA[26][26] =
     "1222222221112111222222221",
     "1211111121112111211111121",
     "1211122222222222222211121",
-    "1222221111112111111222221",
+    "1322221111112111111222221",
     "1111121112222222111211111",
     "1111121112111112111211111",
     "1222222222222222222222221",
     "1211121111112111111211121",
     "1222221111112111111222221",
-    "1211122222212122222211121",
+    "1211132222212122222211121",
     "1222221111222221111222221",
     "1111111111111111111111111",
 };
@@ -66,6 +66,9 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
+ALLEGRO_BITMAP *pipula = NULL;
+
+
 ALLEGRO_BITMAP *splash_Screen = NULL;
 ALLEGRO_FONT *fonte = NULL;
 
@@ -79,6 +82,7 @@ bool redraw = true;
 bool sair = false;
 bool inicial = true;
 int inicializa() {
+
     if(!al_init())
     {
         cout << "Falha ao carregar Allegro" << endl;
@@ -113,39 +117,20 @@ int inicializa() {
     }
 
 
-	// Splashscreen
-
+	// Carregar BITMAPS e Imagens
 	
 	splash_Screen = al_load_bitmap("Splash.tga");
-
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
 
-	
-	  // Fonte
-	al_init_font_addon();
-	al_init_ttf_addon();
-
-	fonte = al_load_ttf_font("fontes/MISFITS_.TTF", 72, 0);
-
-	if (!fonte) {
-		cout << "Falha ao carregar fonte" << endl;
-		al_destroy_display(display);
-		return 0;
-	}
-
-	al_draw_text(fonte, al_map_rgb(0, 0, 0),  (SCREEN_H / 2), (SCREEN_W / 2), ALLEGRO_ALIGN_CENTRE, "TA OK MANO!");
-	
     
-    /* if (key[KEY_ENTER]){
+    if (key[KEY_ENTER]){
         al_destroy_bitmap(splash_Screen);
-    } */
+    } 
     
-	
-	
 
     mapa = al_load_bitmap("map.tga");
     if(!mapa)
@@ -166,13 +151,20 @@ int inicializa() {
     al_draw_bitmap(pacman,posx,posy,0);
 
     ball = al_load_bitmap("imagens/bolinha.tga");
-    if(!ball)
-    {
+    if(!ball){
         cout << "Falha ao carregar as bolinhas!" << endl;
         al_destroy_display(display);
         return 0;
     }
     al_draw_bitmap(ball,posx,posy,0);
+
+	pipula = al_load_bitmap("imagens/pipula.tga");
+	if (!pipula) {
+		cout << "Falha ao carregar as pipulas!" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
+	al_draw_bitmap(pipula, posx, posy, 0);
 
     event_queue = al_create_event_queue();
     if(!event_queue)
@@ -301,17 +293,20 @@ int main(int argc, char **argv)
 
             al_clear_to_color(al_map_rgb(0,0,0));
             if (inicial == true){
-            al_draw_bitmap(splash_Screen, 0, 0, 0);
-            cout << "1" << endl;
+				al_draw_bitmap(splash_Screen, 0, 0, 0);
+				cout << "1" << endl;
             }
             else {
-            al_draw_bitmap(mapa,0,0,0);
-            for (int a = 0; a < 26; a++)
-                for (int b=0; b<26; b++)
-                if (MAPA[a][b] == '2')
-                 al_draw_bitmap(ball, b * q, a * q, 0 ); 
-            al_draw_bitmap(pacman,posx,posy,0);
-            cout << "2" << endl;
+				al_draw_bitmap(mapa,0,0,0);
+
+				// Carregar itens do mapa/ bolinha e pipula 
+				for (int a = 0; a < 26; a++)
+					for (int b = 0; b < 26; b++) {
+						if (MAPA[a][b] == '2') al_draw_bitmap(ball, b * q, a * q, 0);
+						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, b * q, a * q, 0);
+					}
+				al_draw_bitmap(pacman,posx,posy,0);
+				cout << "2" << endl;
             }
             al_flip_display();
         }

@@ -30,6 +30,12 @@ enum MYKEYS{
 //matriz definindo mapa do jogo: 1 representa paredes, 0 representa corredor
 
 //ATENÇÃO! precisa atualizar a matriz
+
+	// Numeros na Matriz
+	// 1 = Parede
+	// 2 = Bolinha
+	// 3 = Pipula
+
 char MAPA[26][26] =
 {
     "1111111111111111111111111",

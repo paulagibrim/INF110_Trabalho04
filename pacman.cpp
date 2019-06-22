@@ -8,20 +8,31 @@
             GABRIEL XXXX - ESXXXXXX
 
     MODIFICAÇÃO: 20/06/2019
+
+	ATENÇÃO EU, RENAN VOU REFAZER O MAPA ATUAL;
+
+
+
+	CORES
+	AZUL = al_map_rgb(15, 174, 191)
+	VERDE = al_map_rgb(65, 166, 50)
+
+
 */
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_font.h>
-
 #include <iostream>
 
 using namespace std;
 
-const float FPS = 10;
+const float FPS = 15;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
+
+bool DEBUG_MODE = true;
 
 enum MYKEYS{
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_ENTER
@@ -30,13 +41,21 @@ enum MYKEYS{
 //matriz definindo mapa do jogo: 1 representa paredes, 0 representa corredor
 
 //ATENÇÃO! precisa atualizar a matriz
+
+	// Numeros na Matriz
+	// 0 = Vazio
+	// 1 = Parede
+	// 2 = Bolinha
+	// 3 = Pipula
+	// 4 = Portal
+
 char MAPA[26][26] =
 {
     "1111111111111111111111111",
     "1222222221111111222222221",
     "1211111121111111211111121",
     "1211111122222222211111121",
-    "1222222221111111222222221",
+    "1222222221111111222232221",
     "1112111121111111211112111",
     "1222111122221222211112221",
     "1212111111121211111112121",
@@ -48,13 +67,13 @@ char MAPA[26][26] =
     "1222222221112111222222221",
     "1211111121112111211111121",
     "1211122222222222222211121",
-    "1222221111112111111222221",
+    "1322221111112111111222221",
     "1111121112222222111211111",
     "1111121112111112111211111",
     "1222222222222222222222221",
     "1211121111112111111211121",
     "1222221111112111111222221",
-    "1211122222212122222211121",
+    "1211132222212122222211121",
     "1222221111222221111222221",
     "1111111111111111111111111",
 };
@@ -66,19 +85,25 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
+ALLEGRO_BITMAP *pipula = NULL;
+
+
 ALLEGRO_BITMAP *splash_Screen = NULL;
-ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_FONT *fonte_Misfits = NULL;
+ALLEGRO_FONT* fonte_Misfits_2 = NULL;
+
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
 
-bool key[4] = { false, false, false, false };
+bool key[5] = { false, false, false, false, false };
 bool redraw = true;
 bool sair = false;
-
+bool inicial = true;
 int inicializa() {
+
     if(!al_init())
     {
         cout << "Falha ao carregar Allegro" << endl;
@@ -113,43 +138,37 @@ int inicializa() {
     }
 
 
-	// Splashscreen
+	// Fontes
 
+	al_init_font_addon();
+	al_init_ttf_addon();
+
+	fonte_Misfits = al_load_font("fontes/MISFITS_.TTF", 20, 0);
+	fonte_Misfits_2 = al_load_font("fontes/MISFITS_.TTF", 60, 0);
+	if (!fonte_Misfits || !fonte_Misfits_2) {
+		cout << "Falha ao carregar fonte MISFITS_" << endl;
+		al_destroy_display(display);
+		al_destroy_font(fonte_Misfits_2);
+		return 0;
+	}
+
+	// Carregar BITMAPS e Imagens
 	
-	splash_Screen = al_load_bitmap("imagens/Splash.bmp");
-
+	splash_Screen = al_load_bitmap("Splash.tga");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
 
-	
-	  // Fonte
-	al_init_font_addon();
-	al_init_ttf_addon();
 
-	fonte = al_load_ttf_font("fontes/MISFITS_.TTF", 72, 0);
 
-	if (!fonte) {
-		cout << "Falha ao carregar fonte" << endl;
-		al_destroy_display(display);
-		return 0;
-	}
-
-	al_draw_text(fonte, al_map_rgb(0, 0, 0),  (SCREEN_H / 2), (SCREEN_W / 2), ALLEGRO_ALIGN_CENTRE, "TA OK MANO!");
-	 al_draw_bitmap(splash_Screen, 0, 0, 0);
+    if (key[KEY_ENTER]){
+        al_destroy_bitmap(splash_Screen); // Destruir Splash Screen
+    } 
     
-    /* if (key[KEY_ENTER]){
-        al_destroy_bitmap(splash_Screen);
-    } */
-    al_flip_display();
-	al_rest(5);
-	al_destroy_bitmap(splash_Screen);
-    
-	
 
-    mapa = al_load_bitmap("imagens/map.bmp");
+    mapa = al_load_bitmap("map.tga");
     if(!mapa)
     {
         cout << "Falha ao carregar o mapa!" << endl;
@@ -168,13 +187,20 @@ int inicializa() {
     al_draw_bitmap(pacman,posx,posy,0);
 
     ball = al_load_bitmap("imagens/bolinha.tga");
-    if(!ball)
-    {
+    if(!ball){
         cout << "Falha ao carregar as bolinhas!" << endl;
         al_destroy_display(display);
         return 0;
     }
     al_draw_bitmap(ball,posx,posy,0);
+
+	pipula = al_load_bitmap("imagens/pipula.tga");
+	if (!pipula) {
+		cout << "Falha ao carregar as pipulas!" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
+	al_draw_bitmap(pipula, posx, posy, 0);
 
     event_queue = al_create_event_queue();
     if(!event_queue)
@@ -200,6 +226,9 @@ int main(int argc, char **argv)
 {
     if(!inicializa()) return -1;
 
+	int pontos = 0;
+
+
     while(!sair)
     {
         ALLEGRO_EVENT ev;
@@ -207,41 +236,43 @@ int main(int argc, char **argv)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {   
-            
-            if(key[KEY_UP] && MAPA[i-1][j] != '1')
-            {
+            if(key[KEY_ENTER]) {
+                inicial = false;
+                cout << "3" << endl;
+            }
+            if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false) {
                 i--;
                 posy = i*q;
             }
 
-            if(key[KEY_DOWN] && MAPA[i+1][j] != '1')
-            {
+            if(key[KEY_DOWN] && MAPA[i+1][j] != '1' and inicial == false) {
                 i++;
                 posy = i*q;
             }
 
-            if(key[KEY_LEFT] && MAPA[i][j-1] != '1')
-            {
+            if(key[KEY_LEFT] && MAPA[i][j-1] != '1' and inicial == false) {
                 j--;
                 posx = j*q;
             }
 
-            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1')
-            {
+            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1' and inicial == false) {
                 j++;
                 posx = j*q;
             }
 
             redraw = true;
         }
-        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-        {
+        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             break;
         }
         else if(ev.type == ALLEGRO_EVENT_KEY_DOWN)
         {
             switch(ev.keyboard.keycode)
             {
+            case ALLEGRO_KEY_ENTER:
+                key[KEY_ENTER] = true;
+                break;
+
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = true;
                 break;
@@ -263,6 +294,10 @@ int main(int argc, char **argv)
         {
             switch(ev.keyboard.keycode)
             {
+            case ALLEGRO_KEY_ENTER:
+                key[KEY_ENTER] = false;
+                break;
+
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = false;
                 break;
@@ -290,15 +325,58 @@ int main(int argc, char **argv)
             redraw = false;
 
             al_clear_to_color(al_map_rgb(0,0,0));
+            if (inicial == true){
+				al_draw_bitmap(splash_Screen, 0, 0, 0);
+				al_draw_textf(fonte_Misfits_2, al_map_rgb(65, 166, 50), SCREEN_W/2, SCREEN_H/2, ALLEGRO_ALIGN_CENTER, "APERTA ENTER AI");
+				if (DEBUG_MODE == true) cout << "1" << endl;
+            }
+            else {
+				al_draw_bitmap(mapa,0,0,0);
 
-            al_draw_bitmap(mapa,0,0,0);
-            al_draw_bitmap(pacman,posx,posy,0);
+				// Carregar itens do mapa/ bolinha e pipula 
+				for (int a = 0; a < 26; a++)
+					for (int b = 0; b < 26; b++) {
+						if (MAPA[a][b] == '2') al_draw_bitmap(ball, b * q, a * q, 0);
+						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, b * q, a * q, 0);
+					}
+				al_draw_bitmap(pacman,posx,posy,0);
+				if (DEBUG_MODE == true) {
+					cout << "2" << endl;
+					cout << "x = " << posx << " y = " << posy << endl;
+				}
+
+				for (int i = 0; i < 26; i++) {
+					for (int j = 0; j < 26; j++) {
+						// Remover do mapa itens
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
+							MAPA[i][j] = '0';	//Tirar Pipula do mapa
+							pontos += 33;
+						}
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
+							MAPA[i][j] = '0';	// Tirar Bolinha do mapa
+							pontos += 10;	// Aumentar pontuacao
+							if (DEBUG_MODE == true) cout << pontos << endl;
+						}
+					}
+				}
+				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 200, 510, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
+            }
+
             al_flip_display();
         }
     }
 
+	// Destruir BITMAPS
     al_destroy_bitmap(mapa);
     al_destroy_bitmap(pacman);
+	al_destroy_bitmap(ball);
+	al_destroy_bitmap(pipula);
+
+	// Destruir Fontes
+	al_destroy_font(fonte_Misfits);
+
+
+	// Destruir
     al_destroy_timer(timer);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);

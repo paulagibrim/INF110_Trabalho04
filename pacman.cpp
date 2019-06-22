@@ -197,6 +197,9 @@ int main(int argc, char **argv)
 {
     if(!inicializa()) return -1;
 
+	int pontos = 0;
+
+
     while(!sair)
     {
         ALLEGRO_EVENT ev;
@@ -314,8 +317,12 @@ int main(int argc, char **argv)
 				for (int i = 0; i < 26; i++) {
 					for (int j = 0; j < 26; j++) {
 						// Remover do mapa itens
-						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') MAPA[i][j] = '0';	// Pipula
-						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') MAPA[i][j] = '0';	// Bolinha
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') MAPA[i][j] = '0';	//Tirar Pipula do mapa
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
+							MAPA[i][j] = '0';	// Tirar Bolinha do mapa
+							pontos += 10;	// Aumentar pontuacao
+							cout << pontos << endl;
+						}
 					}
 				}
             }

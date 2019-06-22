@@ -14,14 +14,15 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_font.h>
-
 #include <iostream>
 
 using namespace std;
 
-const float FPS = 10;
+const float FPS = 15;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
+
+bool DEBUG_MODE = true;
 
 enum MYKEYS{
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_ENTER
@@ -298,7 +299,7 @@ int main(int argc, char **argv)
             al_clear_to_color(al_map_rgb(0,0,0));
             if (inicial == true){
 				al_draw_bitmap(splash_Screen, 0, 0, 0);
-				cout << "1" << endl;
+				if (DEBUG_MODE == true) cout << "1" << endl;
             }
             else {
 				al_draw_bitmap(mapa,0,0,0);
@@ -310,9 +311,10 @@ int main(int argc, char **argv)
 						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, b * q, a * q, 0);
 					}
 				al_draw_bitmap(pacman,posx,posy,0);
-				cout << "2" << endl;
-
-				cout << "x = "<<posx << " y = " << posy << endl;
+				if (DEBUG_MODE == true) {
+					cout << "2" << endl;
+					cout << "x = " << posx << " y = " << posy << endl;
+				}
 
 				for (int i = 0; i < 26; i++) {
 					for (int j = 0; j < 26; j++) {
@@ -321,7 +323,7 @@ int main(int argc, char **argv)
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
 							MAPA[i][j] = '0';	// Tirar Bolinha do mapa
 							pontos += 10;	// Aumentar pontuacao
-							cout << pontos << endl;
+							if (DEBUG_MODE == true) cout << pontos << endl;
 						}
 					}
 				}

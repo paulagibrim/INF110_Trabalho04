@@ -8,6 +8,8 @@
             GABRIEL XXXX - ESXXXXXX
 
     MODIFICAÇÃO: 20/06/2019
+
+	ATENÇÃO EU, RENAN VOU REFAZER O MAPA ATUAL;
 */
 
 #include <allegro5/allegro.h>
@@ -37,6 +39,7 @@ enum MYKEYS{
 	// 1 = Parede
 	// 2 = Bolinha
 	// 3 = Pipula
+	// 4 = Portal
 
 char MAPA[26][26] =
 {

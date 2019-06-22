@@ -10,6 +10,13 @@
     MODIFICAÇÃO: 20/06/2019
 
 	ATENÇÃO EU, RENAN VOU REFAZER O MAPA ATUAL;
+
+
+
+	CORES
+	AZUL = al_map_rgb(15, 174, 191)
+
+
 */
 
 #include <allegro5/allegro.h>
@@ -81,7 +88,7 @@ ALLEGRO_BITMAP *pipula = NULL;
 
 
 ALLEGRO_BITMAP *splash_Screen = NULL;
-ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_FONT *fonte_Misfits = NULL;
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
@@ -128,6 +135,18 @@ int inicializa() {
     }
 
 
+	// Fontes
+
+	al_init_font_addon();
+	al_init_ttf_addon();
+
+	fonte_Misfits = al_load_font("fontes/MISFITS_.TTF", 20, 0);
+	if (!fonte_Misfits) {
+		cout << "Falha ao carregar fonte MISFITS_" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
+
 	// Carregar BITMAPS e Imagens
 	
 	splash_Screen = al_load_bitmap("Splash.tga");
@@ -137,9 +156,10 @@ int inicializa() {
 		return 0;
 	}
 
-    
+
+
     if (key[KEY_ENTER]){
-        al_destroy_bitmap(splash_Screen);
+        al_destroy_bitmap(splash_Screen); // Destruir Splash Screen
     } 
     
 
@@ -322,7 +342,10 @@ int main(int argc, char **argv)
 				for (int i = 0; i < 26; i++) {
 					for (int j = 0; j < 26; j++) {
 						// Remover do mapa itens
-						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') MAPA[i][j] = '0';	//Tirar Pipula do mapa
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
+							MAPA[i][j] = '0';	//Tirar Pipula do mapa
+							pontos += 33;
+						}
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
 							MAPA[i][j] = '0';	// Tirar Bolinha do mapa
 							pontos += 10;	// Aumentar pontuacao
@@ -330,13 +353,23 @@ int main(int argc, char **argv)
 						}
 					}
 				}
+				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 200, 510, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
             }
+
             al_flip_display();
         }
     }
 
+	// Destruir BITMAPS
     al_destroy_bitmap(mapa);
     al_destroy_bitmap(pacman);
+	al_destroy_bitmap(ball);
+	al_destroy_bitmap(pipula);
+
+	// Destruir Fontes
+	al_destroy_font(fonte_Misfits);
+
+	// Destruir
     al_destroy_timer(timer);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);

@@ -32,6 +32,7 @@ enum MYKEYS{
 //ATENÇÃO! precisa atualizar a matriz
 
 	// Numeros na Matriz
+	// 0 = Vazio
 	// 1 = Parede
 	// 2 = Bolinha
 	// 3 = Pipula
@@ -203,39 +204,33 @@ int main(int argc, char **argv)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {   
-            if(key[KEY_ENTER])
-            {
+            if(key[KEY_ENTER]) {
                 inicial = false;
                 cout << "3" << endl;
             }
-            if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false)
-            {
+            if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false) {
                 i--;
                 posy = i*q;
             }
 
-            if(key[KEY_DOWN] && MAPA[i+1][j] != '1' and inicial == false)
-            {
+            if(key[KEY_DOWN] && MAPA[i+1][j] != '1' and inicial == false) {
                 i++;
                 posy = i*q;
             }
 
-            if(key[KEY_LEFT] && MAPA[i][j-1] != '1' and inicial == false)
-            {
+            if(key[KEY_LEFT] && MAPA[i][j-1] != '1' and inicial == false) {
                 j--;
                 posx = j*q;
             }
 
-            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1' and inicial == false)
-            {
+            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1' and inicial == false) {
                 j++;
                 posx = j*q;
             }
 
             redraw = true;
         }
-        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-        {
+        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             break;
         }
         else if(ev.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -313,6 +308,16 @@ int main(int argc, char **argv)
 					}
 				al_draw_bitmap(pacman,posx,posy,0);
 				cout << "2" << endl;
+
+				cout << "x = "<<posx << " y = " << posy << endl;
+
+				for (int i = 0; i < 26; i++) {
+					for (int j = 0; j < 26; j++) {
+						// Remover do mapa itens
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') MAPA[i][j] = '0';	// Pipula
+						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') MAPA[i][j] = '0';	// Bolinha
+					}
+				}
             }
             al_flip_display();
         }

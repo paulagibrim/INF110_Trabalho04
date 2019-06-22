@@ -74,10 +74,10 @@ int q = 20;         //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
 
-bool key[4] = { false, false, false, false };
+bool key[5] = { false, false, false, false, false };
 bool redraw = true;
 bool sair = false;
-
+bool inicial = true;
 int inicializa() {
     if(!al_init())
     {
@@ -116,7 +116,7 @@ int inicializa() {
 	// Splashscreen
 
 	
-	splash_Screen = al_load_bitmap("imagens/Splash.bmp");
+	splash_Screen = al_load_bitmap("Splash.tga");
 
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
@@ -138,18 +138,16 @@ int inicializa() {
 	}
 
 	al_draw_text(fonte, al_map_rgb(0, 0, 0),  (SCREEN_H / 2), (SCREEN_W / 2), ALLEGRO_ALIGN_CENTRE, "TA OK MANO!");
-	 al_draw_bitmap(splash_Screen, 0, 0, 0);
+	
     
     /* if (key[KEY_ENTER]){
         al_destroy_bitmap(splash_Screen);
     } */
-    al_flip_display();
-	al_rest(5);
-	al_destroy_bitmap(splash_Screen);
     
 	
+	
 
-    mapa = al_load_bitmap("imagens/map.bmp");
+    mapa = al_load_bitmap("map.tga");
     if(!mapa)
     {
         cout << "Falha ao carregar o mapa!" << endl;
@@ -207,26 +205,30 @@ int main(int argc, char **argv)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {   
-            
-            if(key[KEY_UP] && MAPA[i-1][j] != '1')
+            if(key[KEY_ENTER])
+            {
+                inicial = false;
+                cout << "3" << endl;
+            }
+            if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false)
             {
                 i--;
                 posy = i*q;
             }
 
-            if(key[KEY_DOWN] && MAPA[i+1][j] != '1')
+            if(key[KEY_DOWN] && MAPA[i+1][j] != '1' and inicial == false)
             {
                 i++;
                 posy = i*q;
             }
 
-            if(key[KEY_LEFT] && MAPA[i][j-1] != '1')
+            if(key[KEY_LEFT] && MAPA[i][j-1] != '1' and inicial == false)
             {
                 j--;
                 posx = j*q;
             }
 
-            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1')
+            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1' and inicial == false)
             {
                 j++;
                 posx = j*q;
@@ -242,6 +244,10 @@ int main(int argc, char **argv)
         {
             switch(ev.keyboard.keycode)
             {
+            case ALLEGRO_KEY_ENTER:
+                key[KEY_ENTER] = true;
+                break;
+
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = true;
                 break;
@@ -263,6 +269,10 @@ int main(int argc, char **argv)
         {
             switch(ev.keyboard.keycode)
             {
+            case ALLEGRO_KEY_ENTER:
+                key[KEY_ENTER] = false;
+                break;
+
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = false;
                 break;
@@ -290,9 +300,19 @@ int main(int argc, char **argv)
             redraw = false;
 
             al_clear_to_color(al_map_rgb(0,0,0));
-
+            if (inicial == true){
+            al_draw_bitmap(splash_Screen, 0, 0, 0);
+            cout << "1" << endl;
+            }
+            else {
             al_draw_bitmap(mapa,0,0,0);
+            for (int a = 0; a < 26; a++)
+                for (int b=0; b<26; b++)
+                if (MAPA[a][b] == '2')
+                 al_draw_bitmap(ball, b * q, a * q, 0 ); 
             al_draw_bitmap(pacman,posx,posy,0);
+            cout << "2" << endl;
+            }
             al_flip_display();
         }
     }

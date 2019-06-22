@@ -15,6 +15,7 @@
 
 	CORES
 	AZUL = al_map_rgb(15, 174, 191)
+	VERDE = al_map_rgb(65, 166, 50)
 
 
 */
@@ -89,6 +90,8 @@ ALLEGRO_BITMAP *pipula = NULL;
 
 ALLEGRO_BITMAP *splash_Screen = NULL;
 ALLEGRO_FONT *fonte_Misfits = NULL;
+ALLEGRO_FONT* fonte_Misfits_2 = NULL;
+
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
@@ -141,9 +144,11 @@ int inicializa() {
 	al_init_ttf_addon();
 
 	fonte_Misfits = al_load_font("fontes/MISFITS_.TTF", 20, 0);
-	if (!fonte_Misfits) {
+	fonte_Misfits_2 = al_load_font("fontes/MISFITS_.TTF", 60, 0);
+	if (!fonte_Misfits || !fonte_Misfits_2) {
 		cout << "Falha ao carregar fonte MISFITS_" << endl;
 		al_destroy_display(display);
+		al_destroy_font(fonte_Misfits_2);
 		return 0;
 	}
 
@@ -322,6 +327,7 @@ int main(int argc, char **argv)
             al_clear_to_color(al_map_rgb(0,0,0));
             if (inicial == true){
 				al_draw_bitmap(splash_Screen, 0, 0, 0);
+				al_draw_textf(fonte_Misfits_2, al_map_rgb(65, 166, 50), SCREEN_W/2, SCREEN_H/2, ALLEGRO_ALIGN_CENTER, "APERTA ENTER AI");
 				if (DEBUG_MODE == true) cout << "1" << endl;
             }
             else {
@@ -368,6 +374,7 @@ int main(int argc, char **argv)
 
 	// Destruir Fontes
 	al_destroy_font(fonte_Misfits);
+
 
 	// Destruir
     al_destroy_timer(timer);

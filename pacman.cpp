@@ -17,7 +17,6 @@
 	AZUL = al_map_rgb(15, 174, 191)
 	VERDE = al_map_rgb(65, 166, 50)
 
-
 */
 
 #include <allegro5/allegro.h>
@@ -162,7 +161,7 @@ int inicializa() {
 
 	// Carregar BITMAPS e Imagens
 	
-	splash_Screen = al_load_bitmap("Splash.tga");
+	splash_Screen = al_load_bitmap("imagens/Splash.tga");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
@@ -344,8 +343,8 @@ int main(int argc, char **argv)
 				// Carregar itens do mapa/ bolinha e pilula 
 				for (int a = 0; a < 26; a++)
 					for (int b = 0; b < 26; b++) {
-						if (MAPA[a][b] == '2') al_draw_bitmap(ball, b * q, a * q, 0);
-						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, b * q, a * q, 0);
+						if (MAPA[a][b] == '2') al_draw_bitmap(ball, b * q + 5, a * q + 5, 0);
+						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, b * q + 5, a * q + 5, 0);
 					}
 				al_draw_bitmap(pacman,posx,posy,0);
 				if (DEBUG_MODE == true) {

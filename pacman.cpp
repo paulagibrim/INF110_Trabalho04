@@ -28,7 +28,7 @@
 
 using namespace std;
 
-const float FPS = 15;
+const float FPS = 10;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
@@ -97,6 +97,14 @@ int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
+
+//Variável de direção
+//se dir = -1 -> esquerda
+//se dir = 1  -> direita
+//se dir = 2  -> cima
+//se dir = -2 -> baixo
+//se dir = 0  -> parado
+int dir = 0;
 
 bool key[5] = { false, false, false, false, false };
 bool redraw = true;
@@ -196,7 +204,7 @@ int inicializa() {
 
 	pipula = al_load_bitmap("imagens/pipula.tga");
 	if (!pipula) {
-		cout << "Falha ao carregar as pipulas!" << endl;
+		cout << "Falha ao carregar as pilulas!" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
@@ -238,8 +246,8 @@ int main(int argc, char **argv)
         {   
             if(key[KEY_ENTER]) {
                 inicial = false;
-                cout << "3" << endl;
             }
+            
             if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false) {
                 i--;
                 posy = i*q;
@@ -333,7 +341,7 @@ int main(int argc, char **argv)
             else {
 				al_draw_bitmap(mapa,0,0,0);
 
-				// Carregar itens do mapa/ bolinha e pipula 
+				// Carregar itens do mapa/ bolinha e pilula 
 				for (int a = 0; a < 26; a++)
 					for (int b = 0; b < 26; b++) {
 						if (MAPA[a][b] == '2') al_draw_bitmap(ball, b * q, a * q, 0);
@@ -349,7 +357,7 @@ int main(int argc, char **argv)
 					for (int j = 0; j < 26; j++) {
 						// Remover do mapa itens
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
-							MAPA[i][j] = '0';	//Tirar Pipula do mapa
+							MAPA[i][j] = '0';	//Tirar Pilula do mapa
 							pontos += 33;
 						}
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {

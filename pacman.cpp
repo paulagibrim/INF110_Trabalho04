@@ -17,17 +17,20 @@
 	AZUL = al_map_rgb(15, 174, 191)
 	VERDE = al_map_rgb(65, 166, 50)
 
+
 */
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include <iostream>
 
 using namespace std;
 
-const float FPS = 10;
+const float FPS = 15;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
@@ -89,21 +92,15 @@ ALLEGRO_BITMAP *pipula = NULL;
 
 ALLEGRO_BITMAP *splash_Screen = NULL;
 ALLEGRO_FONT *fonte_Misfits = NULL;
-ALLEGRO_FONT* fonte_Misfits_2 = NULL;
+ALLEGRO_FONT *fonte_Misfits_2 = NULL;
+ALLEGRO_SAMPLE *musica_Background = NULL;
+ALLEGRO_SAMPLE_INSTANCE* backgroundMusica_instance = NULL;
 
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
 int q = 20;         //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
-
-//Variável de direção
-//se dir = -1 -> esquerda
-//se dir = 1  -> direita
-//se dir = 2  -> cima
-//se dir = -2 -> baixo
-//se dir = 0  -> parado
-int dir = 0;
 
 bool key[5] = { false, false, false, false, false };
 bool redraw = true;
@@ -144,6 +141,34 @@ int inicializa() {
         return 0;
     }
 
+	//addon de audio
+	al_install_audio(); 
+	if (!al_install_audio()) {
+		cout << "Falha ao inicializar o audio" << endl;
+		return 0;
+	}
+
+	//addon que da suporte as extensoes de audio
+	al_init_acodec_addon();
+	if (!al_init_acodec_addon()) {
+		cout << "Falha ao inicializar o codec de audio" << endl;
+		return 0;
+	}
+	//carrega o stream
+
+
+	musica_Background = al_load_sample("musicas/BitofRickandMorty.ogg");
+	if (!musica_Background) {
+		cout << "Audio nao carregado" << endl;
+		al_destroy_sample(musica_Background);
+		return 0;
+	}
+	al_reserve_samples(1);
+
+	backgroundMusica_instance = al_create_sample_instance(musica_Background);
+	al_set_sample_instance_playmode(backgroundMusica_instance, ALLEGRO_PLAYMODE_LOOP);
+
+	al_attach_sample_instance_to_mixer(backgroundMusica_instance, al_get_default_mixer());
 
 	// Fontes
 
@@ -159,9 +184,11 @@ int inicializa() {
 		return 0;
 	}
 
+
+
 	// Carregar BITMAPS e Imagens
 	
-	splash_Screen = al_load_bitmap("imagens/Splash.tga");
+	splash_Screen = al_load_bitmap("Splash.tga");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
@@ -203,7 +230,7 @@ int inicializa() {
 
 	pipula = al_load_bitmap("imagens/pipula.tga");
 	if (!pipula) {
-		cout << "Falha ao carregar as pilulas!" << endl;
+		cout << "Falha ao carregar as pipulas!" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
@@ -235,7 +262,7 @@ int main(int argc, char **argv)
 
 	int pontos = 0;
 
-
+	al_play_sample_instance(backgroundMusica_instance);
     while(!sair)
     {
         ALLEGRO_EVENT ev;
@@ -245,8 +272,9 @@ int main(int argc, char **argv)
         {   
             if(key[KEY_ENTER]) {
                 inicial = false;
+
+                if (DEBUG_MODE == true) cout << "3" << endl;
             }
-            
             if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false) {
                 i--;
                 posy = i*q;
@@ -340,11 +368,11 @@ int main(int argc, char **argv)
             else {
 				al_draw_bitmap(mapa,0,0,0);
 
-				// Carregar itens do mapa/ bolinha e pilula 
+				// Carregar itens do mapa/ bolinha e pipula 
 				for (int a = 0; a < 26; a++)
 					for (int b = 0; b < 26; b++) {
-						if (MAPA[a][b] == '2') al_draw_bitmap(ball, b * q + 5, a * q + 5, 0);
-						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, b * q + 5, a * q + 5, 0);
+						if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);
+						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, (b * q) + 6, (a * q), 0);
 					}
 				al_draw_bitmap(pacman,posx,posy,0);
 				if (DEBUG_MODE == true) {
@@ -356,7 +384,7 @@ int main(int argc, char **argv)
 					for (int j = 0; j < 26; j++) {
 						// Remover do mapa itens
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
-							MAPA[i][j] = '0';	//Tirar Pilula do mapa
+							MAPA[i][j] = '0';	//Tirar Pipula do mapa
 							pontos += 33;
 						}
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
@@ -366,7 +394,7 @@ int main(int argc, char **argv)
 						}
 					}
 				}
-				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 200, 510, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
+				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 80, 515, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
             }
 
             al_flip_display();
@@ -384,9 +412,12 @@ int main(int argc, char **argv)
 
 
 	// Destruir
+	al_destroy_display(display);
+	al_destroy_sample_instance(backgroundMusica_instance);
+	al_destroy_sample(musica_Background);
     al_destroy_timer(timer);
-    al_destroy_display(display);
     al_destroy_event_queue(event_queue);
+
 
     return 0;
 }

@@ -88,13 +88,14 @@ ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
 ALLEGRO_BITMAP *pipula = NULL;
+ALLEGRO_BITMAP *barra = NULL;
 
 
 ALLEGRO_BITMAP *splash_Screen = NULL;
 ALLEGRO_FONT *fonte_Misfits = NULL;
 ALLEGRO_FONT *fonte_Misfits_2 = NULL;
 ALLEGRO_SAMPLE *musica_Background = NULL;
-ALLEGRO_SAMPLE_INSTANCE* backgroundMusica_instance = NULL;
+ALLEGRO_SAMPLE_INSTANCE *backgroundMusica_instance = NULL;
 
 
 int i = 15, j = 12;  //posisao inicial do Pacman na matriz
@@ -167,7 +168,6 @@ int inicializa() {
 
 	backgroundMusica_instance = al_create_sample_instance(musica_Background);
 	al_set_sample_instance_playmode(backgroundMusica_instance, ALLEGRO_PLAYMODE_LOOP);
-
 	al_attach_sample_instance_to_mixer(backgroundMusica_instance, al_get_default_mixer());
 
 	// Fontes
@@ -202,7 +202,7 @@ int inicializa() {
     } 
     
 
-    mapa = al_load_bitmap("map.tga");
+    mapa = al_load_bitmap("map.bmp");
     if(!mapa)
     {
         cout << "Falha ao carregar o mapa!" << endl;
@@ -210,6 +210,17 @@ int inicializa() {
         return 0;
     }
     al_draw_bitmap(mapa,0,0,0);
+
+	//barra = al_load_bitmap("imagens/barra.bmp");
+	//if (!barra)
+	//{
+	//	cout << "Falha ao carregar a  barra!" << endl;
+	//	al_destroy_display(display);
+	//	return 0;
+	//}
+
+
+
 
     pacman = al_load_bitmap("imagens/pac.tga");
     if(!pacman)
@@ -227,6 +238,7 @@ int inicializa() {
         return 0;
     }
     al_draw_bitmap(ball,posx,posy,0);
+
 
 	pipula = al_load_bitmap("imagens/pipula.tga");
 	if (!pipula) {
@@ -249,7 +261,7 @@ int inicializa() {
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-    al_clear_to_color(al_map_rgb(0,0,0));
+    //al_clear_to_color(al_map_rgb(0,0,0));
     al_flip_display();
     al_start_timer(timer);
 
@@ -262,7 +274,8 @@ int main(int argc, char **argv)
 
 	int pontos = 0;
 
-	al_play_sample_instance(backgroundMusica_instance);
+	al_play_sample_instance(backgroundMusica_instance); // Musica em loop
+
     while(!sair)
     {
         ALLEGRO_EVENT ev;
@@ -394,6 +407,7 @@ int main(int argc, char **argv)
 						}
 					}
 				}
+				//al_draw_bitmap(barra, 0, 500, 0);
 				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 80, 515, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
             }
 
@@ -406,6 +420,7 @@ int main(int argc, char **argv)
     al_destroy_bitmap(pacman);
 	al_destroy_bitmap(ball);
 	al_destroy_bitmap(pipula);
+	al_destroy_bitmap(barra);
 
 	// Destruir Fontes
 	al_destroy_font(fonte_Misfits);

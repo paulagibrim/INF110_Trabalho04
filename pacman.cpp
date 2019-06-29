@@ -30,7 +30,7 @@
 
 using namespace std;
 
-const float FPS = 15;
+const float FPS = 20;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
@@ -83,17 +83,22 @@ char MAPA[26][26] =
 
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
 ALLEGRO_BITMAP *pipula = NULL;
 ALLEGRO_BITMAP *barra = NULL;
-
-
+ALLEGRO_BITMAP* portal = NULL;
 ALLEGRO_BITMAP *splash_Screen = NULL;
+
+
 ALLEGRO_FONT *fonte_Misfits = NULL;
 ALLEGRO_FONT *fonte_Misfits_2 = NULL;
+ALLEGRO_FONT *fonte_Misfits_3 = NULL;
+
+
 ALLEGRO_SAMPLE *musica_Background = NULL;
 ALLEGRO_SAMPLE_INSTANCE *backgroundMusica_instance = NULL;
 
@@ -176,11 +181,18 @@ int inicializa() {
 	al_init_ttf_addon();
 
 	fonte_Misfits = al_load_font("fontes/MISFITS_.TTF", 20, 0);
-	fonte_Misfits_2 = al_load_font("fontes/MISFITS_.TTF", 60, 0);
+	fonte_Misfits_2 = al_load_font("fontes/MISFITS_.TTF", 30, 0);
+	fonte_Misfits_3 = al_load_font("fontes/MISFITS_.TTF", 20, 0);
+
+
+	if (!fonte_Misfits_3) {
+		cout << "Falha ao carregar fonte MISFITS_ 3" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
 	if (!fonte_Misfits || !fonte_Misfits_2) {
 		cout << "Falha ao carregar fonte MISFITS_" << endl;
 		al_destroy_display(display);
-		al_destroy_font(fonte_Misfits_2);
 		return 0;
 	}
 
@@ -188,13 +200,19 @@ int inicializa() {
 
 	// Carregar BITMAPS e Imagens
 	
-	splash_Screen = al_load_bitmap("Splash.tga");
+	splash_Screen = al_load_bitmap("imagens/splashScreen.bmp");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
 
+	portal = al_load_bitmap("imagens/portal.tga");
+	if (!portal) {
+		cout << "Falha ao carregar portal" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
 
 
     if (key[KEY_ENTER]){
@@ -210,16 +228,6 @@ int inicializa() {
         return 0;
     }
     al_draw_bitmap(mapa,0,0,0);
-
-	//barra = al_load_bitmap("imagens/barra.bmp");
-	//if (!barra)
-	//{
-	//	cout << "Falha ao carregar a  barra!" << endl;
-	//	al_destroy_display(display);
-	//	return 0;
-	//}
-
-
 
 
     pacman = al_load_bitmap("imagens/pac.tga");
@@ -375,7 +383,10 @@ int main(int argc, char **argv)
             al_clear_to_color(al_map_rgb(0,0,0));
             if (inicial == true){
 				al_draw_bitmap(splash_Screen, 0, 0, 0);
-				al_draw_textf(fonte_Misfits_2, al_map_rgb(65, 166, 50), SCREEN_W/2, SCREEN_H/2, ALLEGRO_ALIGN_CENTER, "APERTA ENTER AI");
+				al_draw_bitmap(portal, 120, 212, 0);
+				al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
+				al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
+
 				if (DEBUG_MODE == true) cout << "1" << endl;
             }
             else {
@@ -417,10 +428,11 @@ int main(int argc, char **argv)
 
 	// Destruir BITMAPS
     al_destroy_bitmap(mapa);
+	al_destroy_bitmap(splash_Screen);
     al_destroy_bitmap(pacman);
 	al_destroy_bitmap(ball);
 	al_destroy_bitmap(pipula);
-	al_destroy_bitmap(barra);
+	al_destroy_bitmap(portal);
 
 	// Destruir Fontes
 	al_destroy_font(fonte_Misfits);

@@ -34,6 +34,13 @@ const float FPS = 15;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
+bool movimento = false;
+int direção;
+//Direçoes
+//1  - direita
+//-1 - esquerda
+//2  - cima
+//-2 - baixo
 bool DEBUG_MODE = true;
 
 enum MYKEYS{
@@ -48,7 +55,7 @@ enum MYKEYS{
 	// 0 = Vazio
 	// 1 = Parede
 	// 2 = Bolinha
-	// 3 = Pipula
+	// 3 = Pilula
 	// 4 = Portal
 
 char MAPA[26][26] =
@@ -87,7 +94,7 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
-ALLEGRO_BITMAP *pipula = NULL;
+ALLEGRO_BITMAP *pilula = NULL;
 
 
 ALLEGRO_BITMAP *splash_Screen = NULL;
@@ -188,7 +195,7 @@ int inicializa() {
 
 	// Carregar BITMAPS e Imagens
 	
-	splash_Screen = al_load_bitmap("Splash.tga");
+	splash_Screen = al_load_bitmap("imagens/Splash.tga");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
@@ -228,13 +235,13 @@ int inicializa() {
     }
     al_draw_bitmap(ball,posx,posy,0);
 
-	pipula = al_load_bitmap("imagens/pipula.tga");
-	if (!pipula) {
-		cout << "Falha ao carregar as pipulas!" << endl;
+	pilula = al_load_bitmap("imagens/pipula.tga");
+	if (!pilula) {
+		cout << "Falha ao carregar as pilulas!" << endl;
 		al_destroy_display(display);
 		return 0;
 	}
-	al_draw_bitmap(pipula, posx, posy, 0);
+	al_draw_bitmap(pilula, posx, posy, 0);
 
     event_queue = al_create_event_queue();
     if(!event_queue)
@@ -368,11 +375,11 @@ int main(int argc, char **argv)
             else {
 				al_draw_bitmap(mapa,0,0,0);
 
-				// Carregar itens do mapa/ bolinha e pipula 
+				// Carregar itens do mapa/ bolinha e pilula 
 				for (int a = 0; a < 26; a++)
 					for (int b = 0; b < 26; b++) {
 						if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);
-						if (MAPA[a][b] == '3') al_draw_bitmap(pipula, (b * q) + 6, (a * q), 0);
+						if (MAPA[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);
 					}
 				al_draw_bitmap(pacman,posx,posy,0);
 				if (DEBUG_MODE == true) {
@@ -384,7 +391,7 @@ int main(int argc, char **argv)
 					for (int j = 0; j < 26; j++) {
 						// Remover do mapa itens
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
-							MAPA[i][j] = '0';	//Tirar Pipula do mapa
+							MAPA[i][j] = '0';	//Tirar Pilula do mapa
 							pontos += 33;
 						}
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
@@ -405,7 +412,7 @@ int main(int argc, char **argv)
     al_destroy_bitmap(mapa);
     al_destroy_bitmap(pacman);
 	al_destroy_bitmap(ball);
-	al_destroy_bitmap(pipula);
+	al_destroy_bitmap(pilula);
 
 	// Destruir Fontes
 	al_destroy_font(fonte_Misfits);

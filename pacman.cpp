@@ -27,6 +27,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -35,12 +36,15 @@ const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
 bool movimento = false;
-int direção;
+//string direcoes[4] = {"up", "down", "right", "left"};
+string direcao;
+string indo;
 //Direçoes
 //1  - direita
 //-1 - esquerda
 //2  - cima
 //-2 - baixo
+
 bool DEBUG_MODE = true;
 
 enum MYKEYS{
@@ -104,8 +108,8 @@ ALLEGRO_SAMPLE *musica_Background = NULL;
 ALLEGRO_SAMPLE_INSTANCE* backgroundMusica_instance = NULL;
 
 
-int i = 15, j = 12;  //posisao inicial do Pacman na matriz
-int q = 20;         //tamanho de cada celula no mapa
+int i = 15, j = 12;  //posicao inicial do Pacman na matriz
+int q = 20;          //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
 
@@ -280,27 +284,34 @@ int main(int argc, char **argv)
             if(key[KEY_ENTER]) {
                 inicial = false;
 
-                if (DEBUG_MODE == true) cout << "3" << endl;
+                //if (DEBUG_MODE == true) //cout << "3" << endl;
             }
-            if(key[KEY_UP] && MAPA[i-1][j] != '1' and inicial == false) {
+            if (key[KEY_UP]) direcao = "up";
+            if (key[KEY_DOWN]) direcao = "down";
+            if (key[KEY_LEFT]) direcao = "left";
+            if (key[KEY_RIGHT]) direcao = "right";
+            
+            if (direcao == "up" and MAPA[i-1][j] != '1' and !inicial){
+                indo = "up";
                 i--;
                 posy = i*q;
             }
-
-            if(key[KEY_DOWN] && MAPA[i+1][j] != '1' and inicial == false) {
+            
+            if (direcao == "down" and MAPA[i+1][j] != '1' and !inicial){
                 i++;
                 posy = i*q;
             }
-
-            if(key[KEY_LEFT] && MAPA[i][j-1] != '1' and inicial == false) {
+            
+            if (direcao == "left" and MAPA[i][j-1] != '1' and !inicial){
                 j--;
                 posx = j*q;
             }
-
-            if(key[KEY_RIGHT] && MAPA[i][j+1] != '1' and inicial == false) {
+            
+            if (direcao == "right" and MAPA[i][j+1] != '1' and !inicial){
                 j++;
                 posx = j*q;
             }
+            
 
             redraw = true;
         }

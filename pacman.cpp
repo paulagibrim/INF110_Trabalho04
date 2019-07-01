@@ -99,14 +99,10 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa = NULL;
 ALLEGRO_BITMAP *pacman = NULL;
 ALLEGRO_BITMAP *ball = NULL;
-<<<<<<< HEAD
-ALLEGRO_BITMAP *pilula = NULL;
-=======
 ALLEGRO_BITMAP *pilula = NULL;
 ALLEGRO_BITMAP *barra = NULL;
 ALLEGRO_BITMAP* portal = NULL;
 ALLEGRO_BITMAP *splash_Screen = NULL;
->>>>>>> f8a40864a73976af91a156f8449843701d6dfb52
 
 
 ALLEGRO_FONT *fonte_Misfits = NULL;
@@ -215,11 +211,7 @@ int inicializa() {
 
 	// Carregar BITMAPS e Imagens
 	
-<<<<<<< HEAD
-	splash_Screen = al_load_bitmap("imagens/Splash.tga");
-=======
 	splash_Screen = al_load_bitmap("imagens/splashScreen.bmp");
->>>>>>> f8a40864a73976af91a156f8449843701d6dfb52
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial" << endl;
 		al_destroy_display(display);
@@ -266,16 +258,9 @@ int inicializa() {
     }
     al_draw_bitmap(ball,posx,posy,0);
 
-<<<<<<< HEAD
 	pilula = al_load_bitmap("imagens/pipula.tga");
 	if (!pilula) {
 		cout << "Falha ao carregar as pilulas!" << endl;
-=======
-
-	pipula = al_load_bitmap("imagens/pipula.tga");
-	if (!pipula) {
-		cout << "Falha ao carregar as pipulas!" << endl;
->>>>>>> f8a40864a73976af91a156f8449843701d6dfb52
 		al_destroy_display(display);
 		return 0;
 	}
@@ -463,12 +448,9 @@ int main(int argc, char **argv)
 	al_destroy_bitmap(splash_Screen);
     al_destroy_bitmap(pacman);
 	al_destroy_bitmap(ball);
-<<<<<<< HEAD
+
 	al_destroy_bitmap(pilula);
-=======
-	al_destroy_bitmap(pipula);
 	al_destroy_bitmap(portal);
->>>>>>> f8a40864a73976af91a156f8449843701d6dfb52
 
 	// Destruir Fontes
 	al_destroy_font(fonte_Misfits);

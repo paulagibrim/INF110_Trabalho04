@@ -118,6 +118,7 @@ int i = 15, j = 12;  //posicao inicial do Pacman na matriz
 int q = 20;          //tamanho de cada celula no mapa
 int posy = i*q;
 int posx = j*q;
+int portalH, portalW;
 
 bool key[5] = { false, false, false, false, false };
 bool redraw = true;
@@ -224,6 +225,9 @@ int inicializa() {
 		al_destroy_display(display);
 		return 0;
 	}
+	portalW = al_get_bitmap_width(portal);
+	portalH = al_get_bitmap_height(portal);
+
 
 
     if (key[KEY_ENTER]){
@@ -290,7 +294,7 @@ int main(int argc, char **argv)
 {
     if(!inicializa()) return -1;
 
-	int pontos = 0;
+	int pontos = 0, graus = 0;
 
 	al_play_sample_instance(backgroundMusica_instance); // Musica em loop
 
@@ -406,7 +410,10 @@ int main(int argc, char **argv)
             al_clear_to_color(al_map_rgb(0,0,0));
             if (inicial == true){
 				al_draw_bitmap(splash_Screen, 0, 0, 0);
-				al_draw_bitmap(portal, 120, 212, 0);
+				graus += 5;
+				if (graus > 360) graus = 0;
+				al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
+				//al_draw_bitmap(portal, 120, 212, 0);
 				al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
 				al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
 

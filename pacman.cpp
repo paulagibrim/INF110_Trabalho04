@@ -31,7 +31,7 @@
 
 using namespace std;
 
-const float FPS = 20;
+const float FPS = 10;
 const int SCREEN_W = 500;
 const int SCREEN_H = 550;
 
@@ -311,27 +311,33 @@ int main(int argc, char **argv)
             if (key[KEY_LEFT]) direcao = "left";
             if (key[KEY_RIGHT]) direcao = "right";
             
-            if (direcao == "up" and MAPA[i-1][j] != '1' and !inicial){
+            if (direcao == "up" and MAPA[i-1][j] != '1' and !inicial)
                 indo = "up";
+            if (indo == "up" and MAPA[i-1][j] != '1' and !inicial){
                 i--;
                 posy = i*q;
             }
-            
-            if (direcao == "down" and MAPA[i+1][j] != '1' and !inicial){
+
+            if (direcao == "down" and MAPA[i+1][j] != '1' and !inicial)
+                indo = "down";
+            if (indo == "down" and MAPA[i+1][j] != '1' and !inicial){
                 i++;
                 posy = i*q;
             }
             
-            if (direcao == "left" and MAPA[i][j-1] != '1' and !inicial){
+            if (direcao == "left" and MAPA[i][j-1] != '1' and !inicial)
+                indo = "left";
+            if (indo == "left" and MAPA[i][j-1] != '1' and !inicial){
                 j--;
                 posx = j*q;
             }
-            
-            if (direcao == "right" and MAPA[i][j+1] != '1' and !inicial){
+
+            if (direcao == "right" and MAPA[i][j+1] != '1' and !inicial)
+                indo = "right";
+            if (indo == "right" and MAPA[i][j+1] != '1' and !inicial){
                 j++;
                 posx = j*q;
             }
-            
 
             redraw = true;
         }

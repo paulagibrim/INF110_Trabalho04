@@ -58,7 +58,7 @@ char MAPA[26][26] =
     "1111111111111111111111111",
     "1222222221111111222222221",
     "1211111121111111211111121",
-    "1211111122222222211111121",
+    "1211111122224222211111121",
     "1222222221111111222232221",
     "1112111121111111211112111",
     "1222111122221222211112221",
@@ -78,7 +78,7 @@ char MAPA[26][26] =
     "1211121111112111111211121",
     "1222221111112111111222221",
     "1211132222212122222211121",
-    "1222221111222221111222221",
+    "1222221111224221111222221",
     "1111111111111111111111111",
 };
 
@@ -97,7 +97,7 @@ ALLEGRO_BITMAP *pacman = NULL;                              //PACMAN (MORTY)
 ALLEGRO_BITMAP *ball = NULL;                                //BOLINHA (COMÍVEL)
 ALLEGRO_BITMAP *pilula = NULL;                              //PILULA QUE DÁ MAIS PONTOS
 ALLEGRO_BITMAP *barra = NULL;                               //ESPAÇO DAS PONTUAÇÕES ????????
-ALLEGRO_BITMAP* portal1 = NULL;                              //PORTAIS
+ALLEGRO_BITMAP *portal = NULL;                              //PORTAIS
 ALLEGRO_BITMAP *splash_Screen = NULL;                       //TELA INICIAL (SPLASH)
 
 ALLEGRO_FONT *fonte_Misfits = NULL;                         //FONTE1 USADA
@@ -112,13 +112,14 @@ int i = 15, j = 12;                             //POSIÇÃO INICIAL DO PACMAN NA
 int q = 20;                                     //TAMANHO DE CADA CÉLULA DO MAPA
 int posy = i*q;                                 //POSIÇÃO EM Y
 int posx = j*q;                                 //POSIÇÃO EM X
-int portal1H, portal1W;                           //POSIÇÃO DO PORTAL
-
+int portalH, portalW;                           //POSIÇÃO DO PORTAL
+int pportalx = 3*q + 10, pportaly = 3*q + 10;   //SERÁ
 bool key[5] = { false, false, false, false, false };    //VARIÁVEL DE USO DE CADA TECLA DEFINIDA ANTERIORMENTE
 bool redraw = true;                                     //VARIÁVEL PARA REDESENHAR A TELA
 bool sair = false;                                      //VARIÁVEL PARA SAIR
 bool inicial = true;                                    //VARIÁVEL QUE INFORMA SE ESTÁ NA TELA INICIAL (TRUE) OU NÃO (FALSE)
 bool andou = false;////////////////////////
+
 //**FUNÇÃO PARA INICIALIZAR O JOGO**//
 int inicializa() {
     //CARREGAR O ALLEGRO
@@ -208,14 +209,14 @@ int inicializa() {
 		return 0;
 	}
 
-	portal1 = al_load_bitmap("imagens/portal.tga");
-	if (!portal1) {
+	portal = al_load_bitmap("imagens/portal.tga");
+	if (!portal) {
 		cout << "Falha ao carregar portal." << endl;
 		al_destroy_display(display);
 		return 0;
 	}
-	portal1W = al_get_bitmap_width(portal1);
-	portal1H = al_get_bitmap_height(portal1);
+	portalW = al_get_bitmap_width(portal);
+	portalH = al_get_bitmap_height(portal);
 
 
 
@@ -402,7 +403,7 @@ int main(int argc, char **argv)
 				al_draw_bitmap(splash_Screen, 0, 0, 0);
 				graus += 5;
 				if (graus > 360) graus = 0;
-				al_draw_rotated_bitmap(portal1, portal1W / 2, portal1H / 2, 250, 350, graus * 3.1415 / 180, 0);
+				al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
 				al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
 				al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
             }else {
@@ -419,13 +420,14 @@ int main(int argc, char **argv)
 					cout << "2" << endl;
 					cout << "x = " << posx << " y = " << posy << endl;
 				}
+                al_draw_bitmap(portal,portalH, portalW, 0);
 
 				for (int i = 0; i < 26; i++) {
 					for (int j = 0; j < 26; j++) {
 						// REMOVER ITENS DO MAPA
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
 							MAPA[i][j] = '0';	//TIRA A PILULA DO MAPA
-							pontos += 33;
+							pontos += 50;
 						}
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
 							MAPA[i][j] = '0';	//TIRA BOLINHA DO MAPA

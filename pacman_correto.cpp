@@ -201,7 +201,6 @@ int inicializa() {
 
 
 	//CARREGAR BITMAPS E IMAGENS
-	
 	splash_Screen = al_load_bitmap("imagens/splashScreen.bmp");
 	if (!splash_Screen) {
 		cout << "Falha ao carregar tela inicial." << endl;
@@ -278,7 +277,6 @@ int inicializa() {
 }
 //**FUNÇÃO TECLADO**//
 void teclado(){
-
     if(key[KEY_ENTER]) inicial = false;                             //DEFINE O APERTO DA TECLA ENTER (INICIALIZAÇÃO)
     if (key[KEY_UP]) direcao = "up";                                //DEFINE A DIREÇÃO PARA CIMA
     if (key[KEY_DOWN]) direcao = "down";                            //DEFINE A DIREÇÃO PARA BAIXO
@@ -341,7 +339,7 @@ int main(int argc, char **argv)
 
         if(ev.type == ALLEGRO_EVENT_TIMER){   
             teclado();
-        if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+        }if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             break;
         }else if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
             //CASOS
@@ -462,7 +460,6 @@ int main(int argc, char **argv)
 	al_destroy_sample(musica_Background);
     al_destroy_timer(timer);
     al_destroy_event_queue(event_queue);
-
 
     return 0;
 }

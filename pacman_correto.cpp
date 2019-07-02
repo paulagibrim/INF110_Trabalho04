@@ -97,7 +97,7 @@ ALLEGRO_BITMAP *pacman = NULL;                              //PACMAN (MORTY)
 ALLEGRO_BITMAP *ball = NULL;                                //BOLINHA (COMÍVEL)
 ALLEGRO_BITMAP *pilula = NULL;                              //PILULA QUE DÁ MAIS PONTOS
 ALLEGRO_BITMAP *barra = NULL;                               //ESPAÇO DAS PONTUAÇÕES ????????
-ALLEGRO_BITMAP* portal = NULL;                              //PORTAIS
+ALLEGRO_BITMAP* portal1 = NULL;                              //PORTAIS
 ALLEGRO_BITMAP *splash_Screen = NULL;                       //TELA INICIAL (SPLASH)
 
 ALLEGRO_FONT *fonte_Misfits = NULL;                         //FONTE1 USADA
@@ -112,7 +112,7 @@ int i = 15, j = 12;                             //POSIÇÃO INICIAL DO PACMAN NA
 int q = 20;                                     //TAMANHO DE CADA CÉLULA DO MAPA
 int posy = i*q;                                 //POSIÇÃO EM Y
 int posx = j*q;                                 //POSIÇÃO EM X
-int portalH, portalW;                           //POSIÇÃO DO PORTAL
+int portal1H, portal1W;                           //POSIÇÃO DO PORTAL
 
 bool key[5] = { false, false, false, false, false };    //VARIÁVEL DE USO DE CADA TECLA DEFINIDA ANTERIORMENTE
 bool redraw = true;                                     //VARIÁVEL PARA REDESENHAR A TELA
@@ -208,14 +208,14 @@ int inicializa() {
 		return 0;
 	}
 
-	portal = al_load_bitmap("imagens/portal.tga");
-	if (!portal) {
+	portal1 = al_load_bitmap("imagens/portal.tga");
+	if (!portal1) {
 		cout << "Falha ao carregar portal." << endl;
 		al_destroy_display(display);
 		return 0;
 	}
-	portalW = al_get_bitmap_width(portal);
-	portalH = al_get_bitmap_height(portal);
+	portal1W = al_get_bitmap_width(portal1);
+	portal1H = al_get_bitmap_height(portal1);
 
 
 
@@ -402,7 +402,7 @@ int main(int argc, char **argv)
 				al_draw_bitmap(splash_Screen, 0, 0, 0);
 				graus += 5;
 				if (graus > 360) graus = 0;
-				al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
+				al_draw_rotated_bitmap(portal1, portal1W / 2, portal1H / 2, 250, 350, graus * 3.1415 / 180, 0);
 				al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
 				al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
             }else {
@@ -448,7 +448,7 @@ int main(int argc, char **argv)
 	al_destroy_bitmap(ball);
 
 	al_destroy_bitmap(pilula);
-	al_destroy_bitmap(portal);
+	al_destroy_bitmap(portal1);
 
 	// DESTRUIR FONTES
 	al_destroy_font(fonte_Misfits);

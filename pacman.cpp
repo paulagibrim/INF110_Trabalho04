@@ -290,31 +290,33 @@ int inicializa() {
     return 1;
 }
 
+
+//FUNÇÃO PRINCIPAL
 int main(int argc, char **argv)
 {
-    if(!inicializa()) return -1;
+    if(!inicializa()) return -1; //SE NÃO INICIALIZAR, RETORNA -1 (ERRO)
 
 	int pontos = 0, graus = 0;
 
-	al_play_sample_instance(backgroundMusica_instance); // Musica em loop
+	al_play_sample_instance(backgroundMusica_instance); // MÚSICA EM LOOP
 
-    while(!sair)
-    {
+    while(!sair){
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
 
-        if(ev.type == ALLEGRO_EVENT_TIMER)
-        {   
+        if(ev.type == ALLEGRO_EVENT_TIMER){   
             if(key[KEY_ENTER]) {
                 inicial = false;
-
-                //if (DEBUG_MODE == true) //cout << "3" << endl;
             }
-            if (key[KEY_UP]) direcao = "up";
-            if (key[KEY_DOWN]) direcao = "down";
-            if (key[KEY_LEFT]) direcao = "left";
-            if (key[KEY_RIGHT]) direcao = "right";
+
+            if (key[KEY_UP]) direcao = "up";                                //DEFINE A DIREÇÃO PARA CIMA
+            if (key[KEY_DOWN]) direcao = "down";                            //DEFINE A DIREÇÃO PARA BAIXO
+            if (key[KEY_LEFT]) direcao = "left";                            //DEFINE A DIREÇÃO PARA A ESQUERDA
+            if (key[KEY_RIGHT]) direcao = "right";                          //DEFINE A DIREÇÃO PARA A DIREITA
             
+
+            //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
+            //ELE ANDA NAQUELA DIREÇÃO
             if (direcao == "up" and MAPA[i-1][j] != '1' and !inicial)
                 indo = "up";
             if (indo == "up" and MAPA[i-1][j] != '1' and !inicial){
@@ -344,14 +346,11 @@ int main(int argc, char **argv)
             }
 
             redraw = true;
-        }
-        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+        }else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             break;
-        }
-        else if(ev.type == ALLEGRO_EVENT_KEY_DOWN)
-        {
-            switch(ev.keyboard.keycode)
-            {
+        }else if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
+            //CASOS
+            switch(ev.keyboard.keycode){
             case ALLEGRO_KEY_ENTER:
                 key[KEY_ENTER] = true;
                 break;
@@ -373,10 +372,9 @@ int main(int argc, char **argv)
                 break;
             }
         }
-        else if(ev.type == ALLEGRO_EVENT_KEY_UP)
-        {
-            switch(ev.keyboard.keycode)
-            {
+        else if(ev.type == ALLEGRO_EVENT_KEY_UP){
+            //CASOS
+            switch(ev.keyboard.keycode){
             case ALLEGRO_KEY_ENTER:
                 key[KEY_ENTER] = false;
                 break;
@@ -403,8 +401,7 @@ int main(int argc, char **argv)
             }
         }
 
-        if(redraw && al_is_event_queue_empty(event_queue))
-        {
+        if(redraw && al_is_event_queue_empty(event_queue)){
             redraw = false;
 
             al_clear_to_color(al_map_rgb(0,0,0));
@@ -413,20 +410,16 @@ int main(int argc, char **argv)
 				graus += 5;
 				if (graus > 360) graus = 0;
 				al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
-				//al_draw_bitmap(portal, 120, 212, 0);
 				al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
 				al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
-
-				if (DEBUG_MODE == true) cout << "1" << endl;
-            }
-            else {
+            }else {
 				al_draw_bitmap(mapa,0,0,0);
 
-				// Carregar itens do mapa/ bolinha e pilula 
+				// CARREGAR ITENS DO MAPA
 				for (int a = 0; a < 26; a++)
 					for (int b = 0; b < 26; b++) {
-						if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);
-						if (MAPA[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);
+						if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);  //CARREGA BOLA
+						if (MAPA[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);     //CARREGA PILULA
 					}
 				al_draw_bitmap(pacman,posx,posy,0);
 				if (DEBUG_MODE == true) {
@@ -436,19 +429,18 @@ int main(int argc, char **argv)
 
 				for (int i = 0; i < 26; i++) {
 					for (int j = 0; j < 26; j++) {
-						// Remover do mapa itens
+						// REMOVER ITENS DO MAPA
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
-							MAPA[i][j] = '0';	//Tirar Pilula do mapa
+							MAPA[i][j] = '0';	//TIRA A PILULA DO MAPA
 							pontos += 33;
 						}
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
-							MAPA[i][j] = '0';	// Tirar Bolinha do mapa
-							pontos += 10;	// Aumentar pontuacao
+							MAPA[i][j] = '0';	//TIRA BOLINHA DO MAPA
+							pontos += 10;	    //AUMENTA A PONTUAÇÃO
 							if (DEBUG_MODE == true) cout << pontos << endl;
 						}
 					}
 				}
-				//al_draw_bitmap(barra, 0, 500, 0);
 				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 80, 515, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
             }
 
@@ -456,7 +448,7 @@ int main(int argc, char **argv)
         }
     }
 
-	// Destruir BITMAPS
+	// DESTRUIR BITMAP
     al_destroy_bitmap(mapa);
 	al_destroy_bitmap(splash_Screen);
     al_destroy_bitmap(pacman);
@@ -465,11 +457,11 @@ int main(int argc, char **argv)
 	al_destroy_bitmap(pilula);
 	al_destroy_bitmap(portal);
 
-	// Destruir Fontes
+	// DESTRUIR FONTES
 	al_destroy_font(fonte_Misfits);
 
 
-	// Destruir
+	// DESTRUIR 
 	al_destroy_display(display);
 	al_destroy_sample_instance(backgroundMusica_instance);
 	al_destroy_sample(musica_Background);

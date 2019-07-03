@@ -134,6 +134,7 @@ ALLEGRO_BITMAP *pportal = NULL;                             //PORTAL IN GAME
 ALLEGRO_BITMAP *phantom1 = NULL;                            //FANTASMA1
 ALLEGRO_BITMAP *phantom2 = NULL;                            //FANTASMA2
 ALLEGRO_BITMAP *phantom3 = NULL;                            //FANTASMA3
+ALLEGRO_BITMAP *phantom4 = NULL;                            //FANTASMA4
 
 ALLEGRO_FONT *fonte_Misfits = NULL;                         //FONTE1 USADA
 ALLEGRO_FONT *fonte_Misfits_2 = NULL;                       //FONTE2 USADA
@@ -337,7 +338,12 @@ int inicializa() {
         al_destroy_display(display);
         return 0;
     }
-
+    phantom4 = al_load_bitmap("imagens/pipula.tga");
+    if (!phantom4){
+        cout << "Falha ao carregar fantasma 4." << endl;
+        al_destroy_display(display);
+        return 0;
+    }
     event_queue = al_create_event_queue();          //CRIAR A FILA DE EVENTOS
     if(!event_queue){
         cout << "Falha ao criar a  fila de eventos." << endl;
@@ -766,6 +772,7 @@ void itens() {
     al_draw_bitmap(phantom1, pposx1, pposy1, 0);
     al_draw_bitmap(phantom2, pposx2, pposy2, 0);
     al_draw_bitmap(phantom3, pposx3, pposy3, 0);
+    al_draw_bitmap(phantom4, pposx4, pposy4, 0);
     for (int i = 0; i < 26; i++) {
         for (int j = 0; j < 26; j++) {
             // REMOVER ITENS DO MAPA
@@ -807,6 +814,7 @@ int main(int argc, char **argv)
         andoup = false;
         andoup2 = false;
         andoup3 = false;
+        andoup4 = false;
         
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
@@ -816,6 +824,7 @@ int main(int argc, char **argv)
             fantasma1();
             fantasma2();
             fantasma3();
+            fantasma4();
 
         }if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             break;

@@ -28,7 +28,7 @@
 using namespace std;
 
 //VARIÁVEIS
-const float FPS = 10;               //DEFINIÇÃO DE FPS
+const float FPS = 5;                //DEFINIÇÃO DE FPS
 const int SCREEN_W = 500;           //TAMANHO DA TELA
 const int SCREEN_H = 550;           //TAMANHO DA TELA
 bool movimento = false;             //VARIÁVEL DE MOVIMENTO (ESTÁ MOVENDO OU NÃO)
@@ -90,7 +90,7 @@ char MAPA_PHANTOM[26][26] =
     "1011110100000000010111101",
     "1000110001110111000110001",
     "1110111101000001011110111",
-    "1000000001000001000000001",
+    "1000000001001001000000001",
     "1011111101110111011111101",
     "1011100000000000000011101",
     "1000001111110111111000001",
@@ -137,8 +137,8 @@ ALLEGRO_SAMPLE *musica_Background = NULL;                   //MUSICA DE FUNDO
 ALLEGRO_SAMPLE_INSTANCE *backgroundMusica_instance = NULL;  //INSTANCIA DA MUSICA DE FUNDO
 
 
-int i = 23, j = 1;                             //POSIÇÃO INICIAL DO PACMAN NA MATRIZ
-int k = 14, l = 13;                             //POSIÇÃO INICIAL DO FANTASMA
+int i = 15, j = 12;                             //POSIÇÃO INICIAL DO PACMAN NA MATRIZ
+int k = 13, l = 13;                             //POSIÇÃO INICIAL DO FANTASMA
 int q = 20;                                     //TAMANHO DE CADA CÉLULA DO MAPA
 int posy = i*q;                                 //POSIÇÃO EM Y
 int posx = j*q;                                 //POSIÇÃO EM X
@@ -146,16 +146,15 @@ int portalH, portalW;                           //POSIÇÃO DO PORTAL
 int pposx1 = k*q, pposy1 = l*q;
 string direcaop2, indop2;
 bool andoup2;
-int k2 = 14 , l2 = 13;
+int k2 = 13 , l2 = 13;
 int pposy2 = l2*q, pposx2 = k2*q;
 string direcaop3, indop3;
 bool andoup3;
-int k3 = 14, l3 = 13;
+int k3 = 10, l3 = 13;
 int pposy3 = l3*q, pposx3 = k3*q;
-
 string direcaop4, indop4;
 bool andoup4;
-int k4 = 14, l4 = 13;
+int k4 = 10, l4 = 12;
 int pposy4 = l4*q, pposx4 = k4*q;
 
 
@@ -169,6 +168,7 @@ bool inicial = true;                                    //VARIÁVEL QUE INFORMA 
 bool andou = false;////////////////////////
 bool andoup = false;
 bool win = false, lose = false, fim = false, final = false;
+int cont = 0;
 
 //**FUNÇÃO PARA INICIALIZAR O JOGO**//
 int inicializa() {
@@ -438,8 +438,8 @@ void teclado(){
     if (pontos == 2640){
         win = true;
     }
-    if ((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
-    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)){
+    if (((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
+    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)) and andou){
         lose = true;
     }
 ;
@@ -823,10 +823,10 @@ int main(int argc, char **argv)
         if(ev.type == ALLEGRO_EVENT_TIMER){   
             teclado();
             fantasma1();
-            fantasma2();
-            fantasma3();
-            fantasma4();
-
+            if (cont>=20) fantasma2();
+            if (cont >=50) fantasma3();
+            if (cont >=70) fantasma4();
+            cont++;
         }if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             break;
         }else if(ev.type == ALLEGRO_EVENT_KEY_DOWN){

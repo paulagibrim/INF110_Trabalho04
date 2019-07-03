@@ -11,15 +11,6 @@
 
     MODIFICAÇÃO: 20/06/2019
 
-	ATENÇÃO EU, RENAN VOU REFAZER O MAPA ATUAL;
-
-
-
-	CORES
-	AZUL = al_map_rgb(15, 174, 191)
-	VERDE = al_map_rgb(65, 166, 50)
-
-
 */
 
 //* BIBLIOTECAS E VARIÁVEIS GLOBAIS *//
@@ -135,6 +126,8 @@ ALLEGRO_BITMAP *phantom1 = NULL;                            //FANTASMA1
 ALLEGRO_BITMAP *phantom2 = NULL;                            //FANTASMA2
 ALLEGRO_BITMAP *phantom3 = NULL;                            //FANTASMA3
 ALLEGRO_BITMAP *phantom4 = NULL;                            //FANTASMA4
+ALLEGRO_BITMAP *ganhou = NULL;							    //TELA QUANDO GANHA
+ALLEGRO_BITMAP *perdeu = NULL;							    //TELA QUANDO PERDE
 
 ALLEGRO_FONT *fonte_Misfits = NULL;                         //FONTE1 USADA
 ALLEGRO_FONT *fonte_Misfits_2 = NULL;                       //FONTE2 USADA
@@ -144,7 +137,7 @@ ALLEGRO_SAMPLE *musica_Background = NULL;                   //MUSICA DE FUNDO
 ALLEGRO_SAMPLE_INSTANCE *backgroundMusica_instance = NULL;  //INSTANCIA DA MUSICA DE FUNDO
 
 
-int i = 15, j = 12;                             //POSIÇÃO INICIAL DO PACMAN NA MATRIZ
+int i = 23, j = 1;                             //POSIÇÃO INICIAL DO PACMAN NA MATRIZ
 int k = 14, l = 13;                             //POSIÇÃO INICIAL DO FANTASMA
 int q = 20;                                     //TAMANHO DE CADA CÉLULA DO MAPA
 int posy = i*q;                                 //POSIÇÃO EM Y
@@ -167,7 +160,7 @@ int pposy4 = l4*q, pposx4 = k4*q;
 
 
 
-int pontos = 0, graus = 0;
+int pontos = 0, graus = 0, contFim = 0;
 
 bool key[5] = { false, false, false, false, false };    //VARIÁVEL DE USO DE CADA TECLA DEFINIDA ANTERIORMENTE
 bool redraw = true;                                     //VARIÁVEL PARA REDESENHAR A TELA
@@ -175,7 +168,7 @@ bool sair = false;                                      //VARIÁVEL PARA SAIR
 bool inicial = true;                                    //VARIÁVEL QUE INFORMA SE ESTÁ NA TELA INICIAL (TRUE) OU NÃO (FALSE)
 bool andou = false;////////////////////////
 bool andoup = false;
-bool win = false, lose = false;
+bool win = false, lose = false, fim = false, final = false;
 
 //**FUNÇÃO PARA INICIALIZAR O JOGO**//
 int inicializa() {
@@ -263,7 +256,16 @@ int inicializa() {
 		al_destroy_display(display);
 		return 0;
 	}
-    
+	ganhou = al_load_bitmap("imagens/ganhou.bmp");
+	if (!ganhou) {
+		cout << "Falha ao carregar ganhou.bmp";
+		al_destroy_display(display);
+	}
+	perdeu = al_load_bitmap("imagens/perdeu.bmp");
+	if (!perdeu) {
+		cout << "Falha ao carregar perdeu.bmp";
+		al_destroy_display(display);
+	}
 	portal = al_load_bitmap("imagens/portal.tga");
 	if (!portal) {
 		cout << "Falha ao carregar portal." << endl;
@@ -273,13 +275,10 @@ int inicializa() {
 	portalW = al_get_bitmap_width(portal);
 	portalH = al_get_bitmap_height(portal);
 
-
-
     if (key[KEY_ENTER]){
         al_destroy_bitmap(splash_Screen);           //SE APERTAR ENTER, DESTROI SPLASHSCREEN
     } 
     
-
     mapa = al_load_bitmap("map.bmp");               //CARREGAR O MAPA
     if(!mapa){
         cout << "Falha ao carregar o mapa!" << endl;
@@ -287,7 +286,6 @@ int inicializa() {
         return 0;
     }
     al_draw_bitmap(mapa,0,0,0);
-
 
     pacman = al_load_bitmap("imagens/pac.tga");     //CARREGAR O PACMAN (MORTY)
     if(!pacman){
@@ -320,25 +318,25 @@ int inicializa() {
         return 0;
     }
 
-    phantom1 = al_load_bitmap("imagens/pipula.tga");
+    phantom1 = al_load_bitmap("imagens/Fantasminhas/pha01.tga");
     if (!phantom1){
         cout << "Falha ao carregar fantasma 1." << endl;
         al_destroy_display(display);
         return 0;
     }
-    phantom2 = al_load_bitmap("imagens/pipula.tga");
+    phantom2 = al_load_bitmap("imagens/Fantasminhas/pha02.tga");
     if (!phantom2){
         cout << "Falha ao carregar fantasma 2." << endl;
         al_destroy_display(display);
         return 0;
     }
-    phantom3 = al_load_bitmap("imagens/pipula.tga");
+    phantom3 = al_load_bitmap("imagens/Fantasminhas/pha03.tga");
     if (!phantom3){
         cout << "Falha ao carregar fantasma 3." << endl;
         al_destroy_display(display);
         return 0;
     }
-    phantom4 = al_load_bitmap("imagens/pipula.tga");
+    phantom4 = al_load_bitmap("imagens/Fantasminhas/pha04.tga");
     if (!phantom4){
         cout << "Falha ao carregar fantasma 4." << endl;
         al_destroy_display(display);
@@ -792,13 +790,16 @@ void itens() {
 //**FUNÇÃO DE VERIFICAÇÃO DE VITORIA/DERROTA**//
 void fimdejogo(){
     if (win){
-        inicial = true;
-        al_draw_bitmap(splash_Screen, 0, 0, 0); //TROCAR PARA TELA DE VITÓRIA
+        //inicial = true;
+		final = true;
+        al_draw_bitmap(ganhou, 0, 0, 0); //TROCAR PARA TELA DE VITÓRIA
+
     }
 
     if (lose){
-        inicial = true;
-        al_draw_bitmap(splash_Screen, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
+        //inicial = true;
+		final = true;
+        al_draw_bitmap(perdeu, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
     }
 }
 
@@ -884,13 +885,25 @@ int main(int argc, char **argv)
         if(redraw && al_is_event_queue_empty(event_queue)){
             redraw = false;
 
-            al_clear_to_color(al_map_rgb(0,0,0));
+			al_clear_to_color(al_map_rgb(0, 0, 0));
+			if (fim == true && contFim < 30) {
+				contFim++;
+				cout << contFim << endl;
+				fimdejogo();
+			}
+			if (contFim >= 30) {
+				inicial = true;
+				contFim = 0;
+			}
+   
             if (inicial == true){
 				inicio();
+				fim = false;
             }else {
                 itens();
                 fimdejogo();
             }
+			if (final == true) fim = true;
 
             al_flip_display();
         }
@@ -904,6 +917,9 @@ int main(int argc, char **argv)
 
 	al_destroy_bitmap(pilula);
 	al_destroy_bitmap(portal);
+
+	al_destroy_bitmap(perdeu);
+	al_destroy_bitmap(ganhou);
 
 	// DESTRUIR FONTES
 	al_destroy_font(fonte_Misfits);

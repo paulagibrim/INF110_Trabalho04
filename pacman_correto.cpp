@@ -362,6 +362,14 @@ int inicializa() {
 }
 //**FUNÇÃO TECLADO**//
 void teclado(){
+    if (pontos == 2640){
+        win = true;
+    }
+    if ((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
+    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)){
+        lose = true;
+    }
+
     if(key[KEY_ENTER]) inicial = false;                             //DEFINE O APERTO DA TECLA ENTER (INICIALIZAÇÃO)
     if (key[KEY_UP]) direcao = "up";                                //DEFINE A DIREÇÃO PARA CIMA
     if (key[KEY_DOWN]) direcao = "down";                            //DEFINE A DIREÇÃO PARA BAIXO
@@ -438,8 +446,8 @@ void teclado(){
     if (pontos == 2640){
         win = true;
     }
-    if (((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
-    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)) and andou){
+    if ((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
+    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)){
         lose = true;
     }
 ;
@@ -821,6 +829,7 @@ int main(int argc, char **argv)
         al_wait_for_event(event_queue, &ev);
 
         if(ev.type == ALLEGRO_EVENT_TIMER){   
+            fimdejogo();
             teclado();
             fantasma1();
             if (cont>=20) fantasma2();

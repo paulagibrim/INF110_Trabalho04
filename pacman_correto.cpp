@@ -28,7 +28,7 @@
 using namespace std;
 
 //VARIÁVEIS
-const float FPS = 5;                //DEFINIÇÃO DE FPS
+const float FPS = 6;                //DEFINIÇÃO DE FPS
 const int SCREEN_W = 500;           //TAMANHO DA TELA
 const int SCREEN_H = 550;           //TAMANHO DA TELA
 bool movimento = false;             //VARIÁVEL DE MOVIMENTO (ESTÁ MOVENDO OU NÃO)
@@ -360,6 +360,7 @@ int inicializa() {
 
     return 1;
 }
+
 //**FUNÇÃO TECLADO**//
 void teclado(){
     if (pontos == 2640){
@@ -443,16 +444,10 @@ void teclado(){
         posx = j*q;
         posy = i*q;
     }
-    if (pontos == 2640){
-        win = true;
-    }
-    if ((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
-    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)){
-        lose = true;
-    }
-;
+    
     redraw = true;
 }
+
 //**FUNÇÃO FANTASMAS**//
 void fantasma1(){
     int movimento = rand();
@@ -751,7 +746,6 @@ void fantasma4(){
     } 
 }
 
-
 //**FUNÇÃO DO INÍCIO**//
 void inicio(){
     al_draw_bitmap(splash_Screen, 0, 0, 0);
@@ -796,6 +790,44 @@ void itens() {
 }
 
 //**FUNÇÃO DE VERIFICAÇÃO DE VITORIA/DERROTA**//
+
+void phant_derrota(string direcaop,int k,int l, int pposx1, int pposy1){
+    if (posx == pposx1 and posy == pposy1){
+        lose = true;
+    }
+    if (direcao == "right" and direcaop == "left"){
+        if (posx == (pposx1+q) and posy == pposy1){
+            lose = true;
+        }
+    }
+    if (direcaop == "right" and direcao == "left"){
+        if (posx == (pposx1-q) and posy == pposy1){
+            lose = true;
+        }
+    }
+    if (direcao == "up" and direcaop == "down"){
+        if (posx == pposx1 and posy == (pposy1-q)){
+            lose = true;
+        }
+    }
+    if (direcaop == "up" and direcao == "down"){
+        if (posx == pposx1 and posy == (pposy1+q)){
+            lose = true;
+        }
+    }
+}
+
+void verifica(){
+    if (pontos == 2640){
+        win = true;
+    }
+    phant_derrota(direcaop,k,l,pposx1,pposy1);
+    phant_derrota(direcaop2, k2, l2, pposx2, pposy2);
+    phant_derrota(direcaop3, k3, l3, pposx3, pposy3);
+    phant_derrota(direcaop4, k4, l4, pposx4, pposy4);
+    
+}
+
 void fimdejogo(){
     if (win){
         //inicial = true;
@@ -809,11 +841,11 @@ void fimdejogo(){
 		final = true;
         al_draw_bitmap(perdeu, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
     }
+
 }
 
 //FUNÇÃO PRINCIPAL
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
     if(!inicializa()) return -1; //SE NÃO INICIALIZAR, RETORNA -1 (ERRO)
 
 	al_play_sample_instance(backgroundMusica_instance); // MÚSICA EM LOOP
@@ -831,6 +863,7 @@ int main(int argc, char **argv)
         if(ev.type == ALLEGRO_EVENT_TIMER){   
             fimdejogo();
             teclado();
+            verifica();
             fantasma1();
             if (cont>=20) fantasma2();
             if (cont >=50) fantasma3();
@@ -897,7 +930,7 @@ int main(int argc, char **argv)
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			if (fim == true && contFim < 30) {
 				contFim++;
-				cout << contFim << endl;
+				//cout << contFim << endl;
 				fimdejogo();
 			}
 			if (contFim >= 30) {

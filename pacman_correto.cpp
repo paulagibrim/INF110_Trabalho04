@@ -43,6 +43,7 @@ const int SCREEN_H = 550;           //TAMANHO DA TELA
 bool movimento = false;             //VARIÁVEL DE MOVIMENTO (ESTÁ MOVENDO OU NÃO)
 string direcao;                     //DIREÇÃO QUE VAI - OPÇÕES: "up", "down", "right", "left"
 string indo;                        //DIREÇÃO QUE TÁ INDO - OPÇÕES: "up", "down", "right", "left"
+string direcaop, indop;
 
 // LEGENDA: MATRIZ DO MAPA
 // 0 = VAZIO
@@ -53,7 +54,7 @@ string indo;                        //DIREÇÃO QUE TÁ INDO - OPÇÕES: "up", "
 // 6 = CASINHA DOS FANTASMAS
 
 //MATRIZ DO MAPA
-char MAPA[26][26] =
+char MAPA_PACMAN[26][26] =
 {
     "1111111111111111111111111",
     "1222222221111111222222221",
@@ -67,8 +68,8 @@ char MAPA[26][26] =
     "1211112111211121112111121",
     "1211112122222222212111121",
     "1222112221112111222112221",
-    "1112111121662661211112111",
-    "1222222221662661222222221",
+    "1112111121112111211112111",
+    "1222222221112111222222221",
     "1211111121112111211111121",
     "1211122222222222222211121",
     "1322221111112111111222221",
@@ -79,6 +80,36 @@ char MAPA[26][26] =
     "1222221111112111111222221",
     "1211132222212122222211121",
     "1222221111225221111222221",
+    "1111111111111111111111111",
+};
+
+
+char MAPA_PHANTOM[26][26] =
+{
+    "1111111111111111111111111",
+    "1000000001111111000000001",
+    "1011111101111111011111101",
+    "1011111100004000011111101",
+    "1000000001111111000000001",
+    "1110111101111111011110111",
+    "1000111100001000011110001",
+    "1010111111101011111110101",
+    "1010000111001001110000101",
+    "1011110111011101110111101",
+    "1011110100000000010111101",
+    "1000110001110111000110001",
+    "1110111101000001011110111",
+    "1000000001000001000000001",
+    "1011111101110111011111101",
+    "1011100000000000000011101",
+    "1000001111110111111000001",
+    "1111101110000000111011111",
+    "1111101110111110111011111",
+    "1000000000000000000000001",
+    "1011101111110111111011101",
+    "1000001111110111111000001",
+    "1011100000010100000011101",
+    "1000001111005001111000001",
     "1111111111111111111111111",
 };
 
@@ -100,6 +131,9 @@ ALLEGRO_BITMAP *barra = NULL;                               //ESPAÇO DAS PONTUA
 ALLEGRO_BITMAP *portal = NULL;                              //PORTAL NA TELA INICIAL
 ALLEGRO_BITMAP *splash_Screen = NULL;                       //TELA INICIAL (SPLASH)
 ALLEGRO_BITMAP *pportal = NULL;                             //PORTAL IN GAME
+ALLEGRO_BITMAP *phantom1 = NULL;                            //FANTASMA1
+ALLEGRO_BITMAP *phantom2 = NULL;                            //FANTASMA2
+ALLEGRO_BITMAP *phantom3 = NULL;                            //FANTASMA3
 
 ALLEGRO_FONT *fonte_Misfits = NULL;                         //FONTE1 USADA
 ALLEGRO_FONT *fonte_Misfits_2 = NULL;                       //FONTE2 USADA
@@ -110,16 +144,37 @@ ALLEGRO_SAMPLE_INSTANCE *backgroundMusica_instance = NULL;  //INSTANCIA DA MUSIC
 
 
 int i = 15, j = 12;                             //POSIÇÃO INICIAL DO PACMAN NA MATRIZ
+int k = 14, l = 13;                             //POSIÇÃO INICIAL DO FANTASMA
 int q = 20;                                     //TAMANHO DE CADA CÉLULA DO MAPA
 int posy = i*q;                                 //POSIÇÃO EM Y
 int posx = j*q;                                 //POSIÇÃO EM X
 int portalH, portalW;                           //POSIÇÃO DO PORTAL
-//int pportalx = 3*q + 10, pportaly = 3*q + 10;   //SERÁ
+int pposx1 = k*q, pposy1 = l*q;
+string direcaop2, indop2;
+bool andoup2;
+int k2 = 14 , l2 = 13;
+int pposy2 = l2*q, pposx2 = k2*q;
+string direcaop3, indop3;
+bool andoup3;
+int k3 = 14, l3 = 13;
+int pposy3 = l3*q, pposx3 = k3*q;
+
+string direcaop4, indop4;
+bool andoup4;
+int k4 = 14, l4 = 13;
+int pposy4 = l4*q, pposx4 = k4*q;
+
+
+
+int pontos = 0, graus = 0;
+
 bool key[5] = { false, false, false, false, false };    //VARIÁVEL DE USO DE CADA TECLA DEFINIDA ANTERIORMENTE
 bool redraw = true;                                     //VARIÁVEL PARA REDESENHAR A TELA
 bool sair = false;                                      //VARIÁVEL PARA SAIR
 bool inicial = true;                                    //VARIÁVEL QUE INFORMA SE ESTÁ NA TELA INICIAL (TRUE) OU NÃO (FALSE)
 bool andou = false;////////////////////////
+bool andoup = false;
+bool win = false, lose = false;
 
 //**FUNÇÃO PARA INICIALIZAR O JOGO**//
 int inicializa() {
@@ -207,7 +262,7 @@ int inicializa() {
 		al_destroy_display(display);
 		return 0;
 	}
-
+    
 	portal = al_load_bitmap("imagens/portal.tga");
 	if (!portal) {
 		cout << "Falha ao carregar portal." << endl;
@@ -264,6 +319,25 @@ int inicializa() {
         return 0;
     }
 
+    phantom1 = al_load_bitmap("imagens/pipula.tga");
+    if (!phantom1){
+        cout << "Falha ao carregar fantasma 1." << endl;
+        al_destroy_display(display);
+        return 0;
+    }
+    phantom2 = al_load_bitmap("imagens/pipula.tga");
+    if (!phantom2){
+        cout << "Falha ao carregar fantasma 2." << endl;
+        al_destroy_display(display);
+        return 0;
+    }
+    phantom3 = al_load_bitmap("imagens/pipula.tga");
+    if (!phantom3){
+        cout << "Falha ao carregar fantasma 3." << endl;
+        al_destroy_display(display);
+        return 0;
+    }
+
     event_queue = al_create_event_queue();          //CRIAR A FILA DE EVENTOS
     if(!event_queue){
         cout << "Falha ao criar a  fila de eventos." << endl;
@@ -293,91 +367,456 @@ void teclado(){
 
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
-    if (direcao == "up" and MAPA[i-1][j] != '1' and !inicial)
+    if (direcao == "up" and MAPA_PACMAN[i-1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
         indo = "up";
-    if (indo == "up" and MAPA[i-1][j] != '1' and !inicial and !andou){
+    if (indo == "up" and MAPA_PACMAN[i-1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
         i--;
         posy = i*q;
         andou = true; ////////
     }
 
-    if (direcao == "down" and MAPA[i+1][j] != '1' and !inicial)
+    if (direcao == "down" and MAPA_PACMAN[i+1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
         indo = "down";
-    if (indo == "down" and MAPA[i+1][j] != '1' and !inicial and !andou){
+    if (indo == "down" and MAPA_PACMAN[i+1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
         i++;
         posy = i*q;
         andou = true;/////////
     }
     
-    if (direcao == "left" and MAPA[i][j-1] != '1' and !inicial)
+    if (direcao == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
         indo = "left";
-    if (indo == "left" and MAPA[i][j-1] != '1' and !inicial and !andou){
+    if (indo == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
         j--;
         posx = j*q;
         andou = true;/////////////////
     }
 
 
-    if (direcao == "right" and MAPA[i][j+1] != '1' and !inicial)
+    if (direcao == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
         indo = "right";
-    if (indo == "right" and MAPA[i][j+1] != '1' and !inicial and !andou){
+    if (indo == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
         j++;
         posx = j*q;
         andou = true;///////////////////
     }
 
     //CASO DE PORTAL
-    if (MAPA[i][j] == '4' and !inicial and indo == "right"){
+    if (MAPA_PACMAN[i][j] == '4' and !inicial and indo == "right"){
         j = 13;
         i = 23;
         posx = j*q;
         posy = i*q;
     }
-    if (MAPA[i][j] == '4' and !inicial and indo == "left"){
+    if (MAPA_PACMAN[i][j] == '4' and !inicial and indo == "left"){
         j = 11;
         i = 23;
         posx = j*q;
         posy = i*q;
     }
-    if (MAPA[i][j] == '5' and !inicial and indo == "right"){
+    if (MAPA_PACMAN[i][j] == '5' and !inicial and indo == "right"){
         j = 13;
         i = 3;
         posx = j*q;
         posy = i*q;
     }
-    if (MAPA[i][j] == '5' and !inicial and indo == "left"){
+    if (MAPA_PACMAN[i][j] == '5' and !inicial and indo == "left"){
         j = 11;
         i = 3;
         posx = j*q;
         posy = i*q;
     }
-    if (MAPA[i][j] == '5' and !inicial and indo == "down"){
+    if (MAPA_PACMAN[i][j] == '5' and !inicial and indo == "down"){
         j = 12;
         i = 3;
         posx = j*q;
         posy = i*q;
     }
+    if (pontos == 2640){
+        win = true;
+    }
+    if ((posx == pposx1 and posy == pposy1) or (posx == pposx2 and posy == pposy2)
+    or (posx == pposx3 and posy == pposy3) or (posx == pposx4 and posy == pposy4)){
+        lose = true;
+    }
+;
     redraw = true;
 }
+//**FUNÇÃO FANTASMAS**//
+void fantasma1(){
+    int movimento = rand();
+    if (movimento%4 == 1) direcaop = "right";
+    if (movimento%4 == 2) direcaop = "left";
+    if (movimento%4 == 3) direcaop = "up";
+    if (movimento%4 == 0) direcaop = "down";
+    
+    //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
+    //ELE ANDA NAQUELA DIREÇÃO
+    if (direcaop == "up" and MAPA_PHANTOM[k-1][l] != '1' and !inicial)
+        indop = "up";
+    if (indop == "up" and MAPA_PHANTOM[k-1][l] != '1' and !inicial and !andoup){
+        k--;
+        pposy1 = k*q;
+        andoup = true; ////////
+    }
 
+    if (direcaop == "down" and MAPA_PHANTOM[k+1][l] != '1' and !inicial)
+        indop = "down";
+    if (indop == "down" and MAPA_PHANTOM[k+1][l] != '1' and !inicial and !andoup){
+        k++;
+        pposy1 = k*q;
+        andoup = true;/////////
+    }
+    
+    if (direcaop == "left" and MAPA_PHANTOM[k][l-1] != '1' and !inicial)
+        indop = "left";
+    if (indop == "left" and MAPA_PHANTOM[k][l-1] != '1' and !inicial and !andoup){
+        l--;
+        pposx1 = l*q;
+        andoup = true;/////////////////
+    }
+
+
+    if (direcaop == "right" and MAPA_PHANTOM[k][l+1] != '1' and !inicial)
+        indop = "right";
+    if (indop == "right" and MAPA_PHANTOM[k][l+1] != '1' and !inicial and !andoup){
+        l++;
+        pposx1 = l*q;
+        andoup = true;///////////////////
+    }
+
+    //CASO DE PORTAL
+    if (MAPA_PHANTOM[k][l] == '4' and !inicial and indo == "right"){
+        l = 13;
+        k = 23;
+        pposx1 = l*q;
+        pposy1 = k*q;
+    }
+    if (MAPA_PHANTOM[k][l] == '4' and !inicial and indo == "left"){
+        l = 11;
+        k = 23;
+        pposx1 = l*q;
+        pposy1 = k*q;
+    }
+    if (MAPA_PHANTOM[k][l] == '5' and !inicial and indo == "right"){
+        l = 13;
+        k = 3;
+        pposx1 = l*q;
+        pposy1 = k*q;
+    }
+    if (MAPA_PHANTOM[k][l] == '5' and !inicial and indo == "left"){
+        l = 11;
+        k = 3;
+        pposx1 = l*q;
+        pposy1 = k*q;
+    }
+    if (MAPA_PHANTOM[k][l] == '5' and !inicial and indo == "down"){
+        l = 12;
+        k = 3;
+        pposx1 = l*q;
+        pposy1 = k*q;
+    } 
+}
+void fantasma2(){
+    int movimento = rand();
+    if (movimento%4 == 1) direcaop2 = "right";
+    if (movimento%4 == 2) direcaop2 = "left";
+    if (movimento%4 == 3) direcaop2 = "up";
+    if (movimento%4 == 0) direcaop2 = "down";
+    
+    //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
+    //ELE ANDA NAQUELA DIREÇÃO
+    if (direcaop2 == "up" and MAPA_PHANTOM[k2-1][l2] != '1' and !inicial)
+        indop2 = "up";
+    if (indop2 == "up" and MAPA_PHANTOM[k2-1][l2] != '1' and !inicial and !andoup2){
+        k2--;
+        pposy2 = k2*q;
+        andoup2 = true; ////////
+    }
+
+    if (direcaop2 == "down" and MAPA_PHANTOM[k2+1][l2] != '1' and !inicial)
+        indop2 = "down";
+    if (indop2 == "down" and MAPA_PHANTOM[k2+1][l2] != '1' and !inicial and !andoup2){
+        k2++;
+        pposy2 = k2*q;
+        andoup2 = true;/////////
+    }
+    
+    if (direcaop2 == "left" and MAPA_PHANTOM[k2][l2-1] != '1' and !inicial)
+        indop2 = "left";
+    if (indop2 == "left" and MAPA_PHANTOM[k2][l2-1] != '1' and !inicial and !andoup2){
+        l2--;
+        pposx2 = l2*q;
+        andoup2 = true;/////////////////
+    }
+
+
+    if (direcaop2 == "right" and MAPA_PHANTOM[k2][l2+1] != '1' and !inicial)
+        indop2 = "right";
+    if (indop2 == "right" and MAPA_PHANTOM[k2][l2+1] != '1' and !inicial and !andoup2){
+        l2++;
+        pposx2 = l2*q;
+        andoup2 = true;///////////////////
+    }
+
+    //CASO DE PORTAL
+    if (MAPA_PHANTOM[k2][l2] == '4' and !inicial and indop2 == "right"){
+        l2 = 13;
+        k2 = 23;
+        pposx2 = l2*q;
+        pposy2 = k2*q;
+    }
+    if (MAPA_PHANTOM[k2][l2] == '4' and !inicial and indop2 == "left"){
+        l2 = 11;
+        k2 = 23;
+        pposx2 = l2*q;
+        pposy2 = k2*q;
+    }
+    if (MAPA_PHANTOM[k2][l2] == '5' and !inicial and indop2 == "right"){
+        l2 = 13;
+        k2 = 3;
+        pposx2 = l2*q;
+        pposy2 = k2*q;
+    }
+    if (MAPA_PHANTOM[k2][l2] == '5' and !inicial and indop2 == "left"){
+        l2 = 11;
+        k2 = 3;
+        pposx2 = l2*q;
+        pposy2 = k2*q;
+    }
+    if (MAPA_PHANTOM[k2][l2] == '5' and !inicial and indop2 == "down"){
+        l2 = 12;
+        k2 = 3;
+        pposx2 = l2*q;
+        pposy2 = k2*q;
+    } 
+}
+void fantasma3(){
+    int movimento = rand();
+    if (movimento%4 == 1) direcaop3 = "right";
+    if (movimento%4 == 2) direcaop3 = "left";
+    if (movimento%4 == 3) direcaop3 = "up";
+    if (movimento%4 == 0) direcaop3 = "down";
+    
+    //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
+    //ELE ANDA NAQUELA DIREÇÃO
+    if (direcaop3 == "up" and MAPA_PHANTOM[k3-1][l3] != '1' and !inicial)
+        indop3 = "up";
+    if (indop3 == "up" and MAPA_PHANTOM[k3-1][l3] != '1' and !inicial and !andoup3){
+        k3--;
+        pposy3 = k3*q;
+        andoup3 = true; ////////
+    }
+
+    if (direcaop3 == "down" and MAPA_PHANTOM[k3+1][l3] != '1' and !inicial)
+        indop3 = "down";
+    if (indop3 == "down" and MAPA_PHANTOM[k3+1][l3] != '1' and !inicial and !andoup3){
+        k3++;
+        pposy3 = k3*q;
+        andoup3 = true;/////////
+    }
+    
+    if (direcaop3 == "left" and MAPA_PHANTOM[k3][l3-1] != '1' and !inicial)
+        indop3 = "left";
+    if (indop3 == "left" and MAPA_PHANTOM[k3][l3-1] != '1' and !inicial and !andoup3){
+        l3--;
+        pposx3 = l3*q;
+        andoup3 = true;/////////////////
+    }
+
+
+    if (direcaop3 == "right" and MAPA_PHANTOM[k3][l3+1] != '1' and !inicial)
+        indop3 = "right";
+    if (indop3 == "right" and MAPA_PHANTOM[k3][l3+1] != '1' and !inicial and !andoup3){
+        l3++;
+        pposx3 = l3*q;
+        andoup3 = true;///////////////////
+    }
+
+    //CASO DE PORTAL
+    if (MAPA_PHANTOM[k3][l3] == '4' and !inicial and indop3 == "right"){
+        l3 = 13;
+        k3 = 23;
+        pposx3 = l3*q;
+        pposy3 = k3*q;
+    }
+    if (MAPA_PHANTOM[k3][l3] == '4' and !inicial and indop3 == "left"){
+        l3 = 11;
+        k3 = 23;
+        pposx3 = l3*q;
+        pposy3 = k3*q;
+    }
+    if (MAPA_PHANTOM[k3][l3] == '5' and !inicial and indop3 == "right"){
+        l3 = 13;
+        k3 = 3;
+        pposx3 = l3*q;
+        pposy3 = k3*q;
+    }
+    if (MAPA_PHANTOM[k3][l3] == '5' and !inicial and indop3 == "left"){
+        l3 = 11;
+        k3 = 3;
+        pposx3 = l3*q;
+        pposy3 = k3*q;
+    }
+    if (MAPA_PHANTOM[k3][l3] == '5' and !inicial and indop3 == "down"){
+        l3 = 12;
+        k3 = 3;
+        pposx3 = l3*q;
+        pposy3 = k3*q;
+    } 
+}
+void fantasma4(){
+    int movimento = rand();
+    if (movimento%4 == 1) direcaop4 = "right";
+    if (movimento%4 == 2) direcaop4 = "left";
+    if (movimento%4 == 3) direcaop4 = "up";
+    if (movimento%4 == 0) direcaop4 = "down";
+    
+    //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
+    //ELE ANDA NAQUELA DIREÇÃO
+    if (direcaop4 == "up" and MAPA_PHANTOM[k4-1][l4] != '1' and !inicial)
+        indop4 = "up";
+    if (indop4 == "up" and MAPA_PHANTOM[k4-1][l4] != '1' and !inicial and !andoup4){
+        k4--;
+        pposy4 = k4*q;
+        andoup4 = true; ////////
+    }
+
+    if (direcaop4 == "down" and MAPA_PHANTOM[k4+1][l4] != '1' and !inicial)
+        indop4 = "down";
+    if (indop4 == "down" and MAPA_PHANTOM[k4+1][l4] != '1' and !inicial and !andoup4){
+        k4++;
+        pposy4 = k4*q;
+        andoup4 = true;/////////
+    }
+    
+    if (direcaop4 == "left" and MAPA_PHANTOM[k4][l4-1] != '1' and !inicial)
+        indop4 = "left";
+    if (indop4 == "left" and MAPA_PHANTOM[k4][l4-1] != '1' and !inicial and !andoup4){
+        l4--;
+        pposx4 = l4*q;
+        andoup4 = true;/////////////////
+    }
+
+
+    if (direcaop4 == "right" and MAPA_PHANTOM[k4][l4+1] != '1' and !inicial)
+        indop4 = "right";
+    if (indop4 == "right" and MAPA_PHANTOM[k4][l4+1] != '1' and !inicial and !andoup4){
+        l4++;
+        pposx4 = l4*q;
+        andoup4 = true;///////////////////
+    }
+
+    //CASO DE PORTAL
+    if (MAPA_PHANTOM[k4][l4] == '4' and !inicial and indop4 == "right"){
+        l4 = 13;
+        k4 = 23;
+        pposx4 = l4*q;
+        pposy4 = k4*q;
+    }
+    if (MAPA_PHANTOM[k4][l4] == '4' and !inicial and indop4 == "left"){
+        l4 = 11;
+        k4 = 23;
+        pposx4 = l4*q;
+        pposy4 = k4*q;
+    }
+    if (MAPA_PHANTOM[k4][l4] == '5' and !inicial and indop4 == "right"){
+        l4 = 13;
+        k4 = 3;
+        pposx4 = l4*q;
+        pposy4 = k4*q;
+    }
+    if (MAPA_PHANTOM[k4][l4] == '5' and !inicial and indop4 == "left"){
+        l4 = 11;
+        k4 = 3;
+        pposx4 = l4*q;
+        pposy4 = k4*q;
+    }
+    if (MAPA_PHANTOM[k4][l4] == '5' and !inicial and indop4 == "down"){
+        l4 = 12;
+        k4 = 3;
+        pposx4 = l4*q;
+        pposy4 = k4*q;
+    } 
+}
+
+
+//**FUNÇÃO DO INÍCIO**//
+void inicio(){
+    al_draw_bitmap(splash_Screen, 0, 0, 0);
+    graus += 5;
+    if (graus > 360) graus = 0;
+    al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
+    al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
+    al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
+}
+
+//**FUNÇÃO DE CARREGAR E REMOVER ITENS**//
+void itens() {
+    al_draw_bitmap(mapa,0,0,0);
+
+    // CARREGAR ITENS DO MAPA
+    for (int a = 0; a < 26; a++)
+        for (int b = 0; b < 26; b++) {
+            if (MAPA_PACMAN[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);                  //CARREGA BOLA
+            if (MAPA_PACMAN[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);                     //CARREGA PILULA
+            if (MAPA_PACMAN[a][b] == '4' or MAPA_PACMAN[a][b] == '5') al_draw_bitmap(pportal, (b * q), (a * q), 0);   //CARREGA OS PORTAIS
+        }
+    
+    al_draw_bitmap(pacman,posx,posy,0);             //DESENHA O PACMAN(MORTY)
+    al_draw_bitmap(phantom1, pposx1, pposy1, 0);
+    al_draw_bitmap(phantom2, pposx2, pposy2, 0);
+    al_draw_bitmap(phantom3, pposx3, pposy3, 0);
+    for (int i = 0; i < 26; i++) {
+        for (int j = 0; j < 26; j++) {
+            // REMOVER ITENS DO MAPA
+            if (i == (posy / 20) && j == (posx / 20) && MAPA_PACMAN[i][j] == '3') {
+                MAPA_PACMAN[i][j] = '0';	//TIRA A PILULA DO MAPA
+                pontos += 50;
+            }
+            if (i == (posy / 20) && j == (posx / 20) && MAPA_PACMAN[i][j] == '2') {
+                MAPA_PACMAN[i][j] = '0';	//TIRA BOLINHA DO MAPA
+                pontos += 10;	    //AUMENTA A PONTUAÇÃO
+            }
+        }
+    }
+    al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 80, 515, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
+}
+
+//**FUNÇÃO DE VERIFICAÇÃO DE VITORIA/DERROTA**//
+void fimdejogo(){
+    if (win){
+        inicial = true;
+        al_draw_bitmap(splash_Screen, 0, 0, 0); //TROCAR PARA TELA DE VITÓRIA
+    }
+
+    if (lose){
+        inicial = true;
+        al_draw_bitmap(splash_Screen, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
+    }
+}
 
 //FUNÇÃO PRINCIPAL
 int main(int argc, char **argv)
 {
     if(!inicializa()) return -1; //SE NÃO INICIALIZAR, RETORNA -1 (ERRO)
 
-	int pontos = 0, graus = 0;
-
 	al_play_sample_instance(backgroundMusica_instance); // MÚSICA EM LOOP
 
     while(!sair){
         andou = false;
+        andoup = false;
+        andoup2 = false;
+        andoup3 = false;
         
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
 
         if(ev.type == ALLEGRO_EVENT_TIMER){   
             teclado();
+            fantasma1();
+            fantasma2();
+            fantasma3();
+
         }if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             break;
         }else if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
@@ -438,43 +877,10 @@ int main(int argc, char **argv)
 
             al_clear_to_color(al_map_rgb(0,0,0));
             if (inicial == true){
-				al_draw_bitmap(splash_Screen, 0, 0, 0);
-				graus += 5;
-				if (graus > 360) graus = 0;
-				al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
-				al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
-				al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
+				inicio();
             }else {
-				al_draw_bitmap(mapa,0,0,0);
-
-				// CARREGAR ITENS DO MAPA
-				for (int a = 0; a < 26; a++)
-					for (int b = 0; b < 26; b++) {
-						if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);  //CARREGA BOLA
-						if (MAPA[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);     //CARREGA PILULA
-                        if (MAPA[a][b] == '4' or MAPA[a][b] == '5') al_draw_bitmap(pportal, (b * q), (a * q), 0);        //CARREGA OS PORTAIS
-					}
-				al_draw_bitmap(pacman,posx,posy,0);///////////
-				//if (DEBUG_MODE) {
-					//cout << "2" << endl;
-					//cout << "x = " << posx << " y = " << posy << endl;
-				//}
-
-				for (int i = 0; i < 26; i++) {
-					for (int j = 0; j < 26; j++) {
-						// REMOVER ITENS DO MAPA
-						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '3') {
-							MAPA[i][j] = '0';	//TIRA A PILULA DO MAPA
-							pontos += 50;
-						}
-						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
-							MAPA[i][j] = '0';	//TIRA BOLINHA DO MAPA
-							pontos += 10;	    //AUMENTA A PONTUAÇÃO
-							//if (DEBUG_MODE) cout << pontos << endl;
-						}
-					}
-				}
-				al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 80, 515, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
+                itens();
+                fimdejogo();
             }
 
             al_flip_display();

@@ -49,8 +49,8 @@ string indo;                        //DIREÇÃO QUE TÁ INDO - OPÇÕES: "up", "
 // 1 = PAREDES
 // 2 = BOLINHAS
 // 3 = PILULA
-// 4 = PORTAL
-// 5 = CASINHA DOS FANTASMAS *****IMPLEMENTAR*****
+// 4 E 5 = PORTAL
+// 6 = CASINHA DOS FANTASMAS
 
 //MATRIZ DO MAPA
 char MAPA[26][26] =
@@ -67,8 +67,8 @@ char MAPA[26][26] =
     "1211112111211121112111121",
     "1211112122222222212111121",
     "1222112221112111222112221",
-    "1112111121112111211112111",
-    "1222222221112111222222221",
+    "1112111121662661211112111",
+    "1222222221662661222222221",
     "1211111121112111211111121",
     "1211122222222222222211121",
     "1322221111112111111222221",
@@ -199,8 +199,6 @@ int inicializa() {
 		al_destroy_display(display);
 		return 0;
 	}
-
-
 
 	//CARREGAR BITMAPS E IMAGENS
 	splash_Screen = al_load_bitmap("imagens/splashScreen.bmp");

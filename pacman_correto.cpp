@@ -78,7 +78,7 @@ char MAPA[26][26] =
     "1211121111112111111211121",
     "1222221111112111111222221",
     "1211132222212122222211121",
-    "1222221111224221111222221",
+    "1222221111225221111222221",
     "1111111111111111111111111",
 };
 
@@ -97,8 +97,9 @@ ALLEGRO_BITMAP *pacman = NULL;                              //PACMAN (MORTY)
 ALLEGRO_BITMAP *ball = NULL;                                //BOLINHA (COMÍVEL)
 ALLEGRO_BITMAP *pilula = NULL;                              //PILULA QUE DÁ MAIS PONTOS
 ALLEGRO_BITMAP *barra = NULL;                               //ESPAÇO DAS PONTUAÇÕES ????????
-ALLEGRO_BITMAP *portal = NULL;                              //PORTAIS
+ALLEGRO_BITMAP *portal = NULL;                              //PORTAL NA TELA INICIAL
 ALLEGRO_BITMAP *splash_Screen = NULL;                       //TELA INICIAL (SPLASH)
+ALLEGRO_BITMAP *pportal = NULL;                             //PORTAL IN GAME
 
 ALLEGRO_FONT *fonte_Misfits = NULL;                         //FONTE1 USADA
 ALLEGRO_FONT *fonte_Misfits_2 = NULL;                       //FONTE2 USADA
@@ -113,7 +114,7 @@ int q = 20;                                     //TAMANHO DE CADA CÉLULA DO MAP
 int posy = i*q;                                 //POSIÇÃO EM Y
 int posx = j*q;                                 //POSIÇÃO EM X
 int portalH, portalW;                           //POSIÇÃO DO PORTAL
-int pportalx = 3*q + 10, pportaly = 3*q + 10;   //SERÁ
+//int pportalx = 3*q + 10, pportaly = 3*q + 10;   //SERÁ
 bool key[5] = { false, false, false, false, false };    //VARIÁVEL DE USO DE CADA TECLA DEFINIDA ANTERIORMENTE
 bool redraw = true;                                     //VARIÁVEL PARA REDESENHAR A TELA
 bool sair = false;                                      //VARIÁVEL PARA SAIR
@@ -258,6 +259,13 @@ int inicializa() {
 	}
 	al_draw_bitmap(pilula, posx, posy, 0);
 
+    pportal = al_load_bitmap("imagens/portalpqn.png");
+    if (!pportal){
+        cout << "Falha ao carregar os portais." << endl;
+        al_destroy_display(display);
+        return 0;
+    }
+
     event_queue = al_create_event_queue();          //CRIAR A FILA DE EVENTOS
     if(!event_queue){
         cout << "Falha ao criar a  fila de eventos." << endl;
@@ -311,6 +319,7 @@ void teclado(){
         andou = true;/////////////////
     }
 
+
     if (direcao == "right" and MAPA[i][j+1] != '1' and !inicial)
         indo = "right";
     if (indo == "right" and MAPA[i][j+1] != '1' and !inicial and !andou){
@@ -319,6 +328,37 @@ void teclado(){
         andou = true;///////////////////
     }
 
+    //CASO DE PORTAL
+    if (MAPA[i][j] == '4' and !inicial and indo == "right"){
+        j = 13;
+        i = 23;
+        posx = j*q;
+        posy = i*q;
+    }
+    if (MAPA[i][j] == '4' and !inicial and indo == "left"){
+        j = 11;
+        i = 23;
+        posx = j*q;
+        posy = i*q;
+    }
+    if (MAPA[i][j] == '5' and !inicial and indo == "right"){
+        j = 13;
+        i = 3;
+        posx = j*q;
+        posy = i*q;
+    }
+    if (MAPA[i][j] == '5' and !inicial and indo == "left"){
+        j = 11;
+        i = 3;
+        posx = j*q;
+        posy = i*q;
+    }
+    if (MAPA[i][j] == '5' and !inicial and indo == "down"){
+        j = 12;
+        i = 3;
+        posx = j*q;
+        posy = i*q;
+    }
     redraw = true;
 }
 
@@ -414,13 +454,13 @@ int main(int argc, char **argv)
 					for (int b = 0; b < 26; b++) {
 						if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);  //CARREGA BOLA
 						if (MAPA[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);     //CARREGA PILULA
+                        if (MAPA[a][b] == '4' or MAPA[a][b] == '5') al_draw_bitmap(pportal, (b * q), (a * q), 0);        //CARREGA OS PORTAIS
 					}
 				al_draw_bitmap(pacman,posx,posy,0);///////////
-				if (DEBUG_MODE == true) {
-					cout << "2" << endl;
-					cout << "x = " << posx << " y = " << posy << endl;
-				}
-                al_draw_bitmap(portal,portalH, portalW, 0);
+				//if (DEBUG_MODE) {
+					//cout << "2" << endl;
+					//cout << "x = " << posx << " y = " << posy << endl;
+				//}
 
 				for (int i = 0; i < 26; i++) {
 					for (int j = 0; j < 26; j++) {
@@ -432,7 +472,7 @@ int main(int argc, char **argv)
 						if (i == (posy / 20) && j == (posx / 20) && MAPA[i][j] == '2') {
 							MAPA[i][j] = '0';	//TIRA BOLINHA DO MAPA
 							pontos += 10;	    //AUMENTA A PONTUAÇÃO
-							if (DEBUG_MODE == true) cout << pontos << endl;
+							//if (DEBUG_MODE) cout << pontos << endl;
 						}
 					}
 				}
@@ -450,7 +490,7 @@ int main(int argc, char **argv)
 	al_destroy_bitmap(ball);
 
 	al_destroy_bitmap(pilula);
-	al_destroy_bitmap(portal1);
+	al_destroy_bitmap(portal);
 
 	// DESTRUIR FONTES
 	al_destroy_font(fonte_Misfits);

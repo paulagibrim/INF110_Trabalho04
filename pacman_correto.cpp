@@ -162,7 +162,9 @@ bool andoup4;
 int k4 = 10, l4 = 12;
 int pposy4 = l4*q, pposx4 = k4*q;
 
-
+//*//
+string ultimodir, ultimodir2, ultimodir3, ultimodir4;
+//*//
 
 int pontos = 0, graus = 0, contFim = 0;
 
@@ -467,6 +469,7 @@ void teclado(){
     redraw = true;
 }
 
+
 //**FUNÇÃO FANTASMAS**//
 void fantasma1(){
     int movimento = rand();
@@ -474,27 +477,35 @@ void fantasma1(){
     if (movimento%4 == 2) direcaop = "left";
     if (movimento%4 == 3) direcaop = "up";
     if (movimento%4 == 0) direcaop = "down";
+	
     
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
-    if (direcaop == "up" and MAPA_PHANTOM[k-1][l] != '1' and !inicial)
-        indop = "up";
+	
+	if (direcaop == "up" and MAPA_PHANTOM[k - 1][l] != '1' and !inicial and ultimodir != "down") { //*// COLOQUEI UMA variavel para guardar qual foi a ultima direção, então o fatasminha so vai ir a direção x se a ultmia não for contraria a que ele  esta tentando ir
+		indop = "up";
+		ultimodir = indop;
+	}
     if (indop == "up" and MAPA_PHANTOM[k-1][l] != '1' and !inicial and !andoup){
         k--;
         pposy1 = k*q;
         andoup = true; ////////
     }
 
-    if (direcaop == "down" and MAPA_PHANTOM[k+1][l] != '1' and !inicial)
-        indop = "down";
+	if (direcaop == "down" and MAPA_PHANTOM[k + 1][l] != '1' and !inicial and ultimodir != "up") {
+		indop = "down";
+		ultimodir = indop;
+	}
     if (indop == "down" and MAPA_PHANTOM[k+1][l] != '1' and !inicial and !andoup){
         k++;
         pposy1 = k*q;
         andoup = true;/////////
     }
     
-    if (direcaop == "left" and MAPA_PHANTOM[k][l-1] != '1' and !inicial)
-        indop = "left";
+	if (direcaop == "left" and MAPA_PHANTOM[k][l - 1] != '1' and !inicial and ultimodir != "right") {
+		indop = "left";
+		ultimodir = indop;
+	}
     if (indop == "left" and MAPA_PHANTOM[k][l-1] != '1' and !inicial and !andoup){
         l--;
         pposx1 = l*q;
@@ -502,8 +513,10 @@ void fantasma1(){
     }
 
 
-    if (direcaop == "right" and MAPA_PHANTOM[k][l+1] != '1' and !inicial)
-        indop = "right";
+	if (direcaop == "right" and MAPA_PHANTOM[k][l + 1] != '1' and !inicial and ultimodir != "left") {
+		indop = "right";
+		ultimodir = indop;
+	}
     if (indop == "right" and MAPA_PHANTOM[k][l+1] != '1' and !inicial and !andoup){
         l++;
         pposx1 = l*q;
@@ -551,24 +564,32 @@ void fantasma2(){
     
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
-    if (direcaop2 == "up" and MAPA_PHANTOM[k2-1][l2] != '1' and !inicial)
-        indop2 = "up";
+
+	//*//
+	if (direcaop2 == "up" and MAPA_PHANTOM[k2 - 1][l2] != '1' and !inicial and ultimodir2 != "down") {
+		indop2 = "up";
+		ultimodir2 = indop2;
+	}
     if (indop2 == "up" and MAPA_PHANTOM[k2-1][l2] != '1' and !inicial and !andoup2){
         k2--;
         pposy2 = k2*q;
         andoup2 = true; ////////
     }
 
-    if (direcaop2 == "down" and MAPA_PHANTOM[k2+1][l2] != '1' and !inicial)
-        indop2 = "down";
+	if (direcaop2 == "down" and MAPA_PHANTOM[k2 + 1][l2] != '1' and !inicial and ultimodir2 != "up") {
+		indop2 = "down";
+		ultimodir2 = indop2;
+	}
     if (indop2 == "down" and MAPA_PHANTOM[k2+1][l2] != '1' and !inicial and !andoup2){
         k2++;
         pposy2 = k2*q;
         andoup2 = true;/////////
     }
     
-    if (direcaop2 == "left" and MAPA_PHANTOM[k2][l2-1] != '1' and !inicial)
-        indop2 = "left";
+	if (direcaop2 == "left" and MAPA_PHANTOM[k2][l2 - 1] != '1' and !inicial and ultimodir2 != "right") {
+		indop2 = "left";
+		ultimodir2 = indop2;
+	}
     if (indop2 == "left" and MAPA_PHANTOM[k2][l2-1] != '1' and !inicial and !andoup2){
         l2--;
         pposx2 = l2*q;
@@ -576,8 +597,10 @@ void fantasma2(){
     }
 
 
-    if (direcaop2 == "right" and MAPA_PHANTOM[k2][l2+1] != '1' and !inicial)
-        indop2 = "right";
+	if (direcaop2 == "right" and MAPA_PHANTOM[k2][l2 + 1] != '1' and !inicial and ultimodir2 != "left") {
+		indop2 = "right";
+		ultimodir2 = indop2;
+	}
     if (indop2 == "right" and MAPA_PHANTOM[k2][l2+1] != '1' and !inicial and !andoup2){
         l2++;
         pposx2 = l2*q;
@@ -625,24 +648,32 @@ void fantasma3(){
     
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
-    if (direcaop3 == "up" and MAPA_PHANTOM[k3-1][l3] != '1' and !inicial)
-        indop3 = "up";
+
+	//*//
+	if (direcaop3 == "up" and MAPA_PHANTOM[k3 - 1][l3] != '1' and !inicial and ultimodir3 != "down") {
+		indop3 = "up";
+		ultimodir3 = indop3;
+	}
     if (indop3 == "up" and MAPA_PHANTOM[k3-1][l3] != '1' and !inicial and !andoup3){
         k3--;
         pposy3 = k3*q;
         andoup3 = true; ////////
     }
 
-    if (direcaop3 == "down" and MAPA_PHANTOM[k3+1][l3] != '1' and !inicial)
+    if (direcaop3 == "down" and MAPA_PHANTOM[k3+1][l3] != '1' and !inicial and ultimodir3 != "up"){
         indop3 = "down";
+		ultimodir3 = indop3;
+	}
     if (indop3 == "down" and MAPA_PHANTOM[k3+1][l3] != '1' and !inicial and !andoup3){
         k3++;
         pposy3 = k3*q;
         andoup3 = true;/////////
     }
     
-    if (direcaop3 == "left" and MAPA_PHANTOM[k3][l3-1] != '1' and !inicial)
+    if (direcaop3 == "left" and MAPA_PHANTOM[k3][l3-1] != '1' and !inicial and ultimodir3 != "right"){
         indop3 = "left";
+		ultimodir3 = indop3;
+	}
     if (indop3 == "left" and MAPA_PHANTOM[k3][l3-1] != '1' and !inicial and !andoup3){
         l3--;
         pposx3 = l3*q;
@@ -650,8 +681,10 @@ void fantasma3(){
     }
 
 
-    if (direcaop3 == "right" and MAPA_PHANTOM[k3][l3+1] != '1' and !inicial)
+    if (direcaop3 == "right" and MAPA_PHANTOM[k3][l3+1] != '1' and !inicial and ultimodir3 != "left"){
         indop3 = "right";
+		ultimodir3 = indop3;
+	}
     if (indop3 == "right" and MAPA_PHANTOM[k3][l3+1] != '1' and !inicial and !andoup3){
         l3++;
         pposx3 = l3*q;
@@ -699,24 +732,33 @@ void fantasma4(){
     
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
-    if (direcaop4 == "up" and MAPA_PHANTOM[k4-1][l4] != '1' and !inicial)
-        indop4 = "up";
+
+	//*//
+	if (direcaop4 == "up" and MAPA_PHANTOM[k4 - 1][l4] != '1' and !inicial and ultimodir4 != "down") {
+		indop4 = "up";
+		ultimodir4 = indop4;
+	}
     if (indop4 == "up" and MAPA_PHANTOM[k4-1][l4] != '1' and !inicial and !andoup4){
         k4--;
         pposy4 = k4*q;
         andoup4 = true; ////////
     }
 
-    if (direcaop4 == "down" and MAPA_PHANTOM[k4+1][l4] != '1' and !inicial)
+    if (direcaop4 == "down" and MAPA_PHANTOM[k4+1][l4] != '1' and !inicial and ultimodir4 != "up"){
         indop4 = "down";
+		ultimodir4 = indop4;
+	}
+
     if (indop4 == "down" and MAPA_PHANTOM[k4+1][l4] != '1' and !inicial and !andoup4){
         k4++;
         pposy4 = k4*q;
         andoup4 = true;/////////
     }
     
-    if (direcaop4 == "left" and MAPA_PHANTOM[k4][l4-1] != '1' and !inicial)
+    if (direcaop4 == "left" and MAPA_PHANTOM[k4][l4-1] != '1' and !inicial and ultimodir4 != "right"){
         indop4 = "left";
+		ultimodir4 = indop4;
+	}
     if (indop4 == "left" and MAPA_PHANTOM[k4][l4-1] != '1' and !inicial and !andoup4){
         l4--;
         pposx4 = l4*q;
@@ -724,8 +766,10 @@ void fantasma4(){
     }
 
 
-    if (direcaop4 == "right" and MAPA_PHANTOM[k4][l4+1] != '1' and !inicial)
+    if (direcaop4 == "right" and MAPA_PHANTOM[k4][l4+1] != '1' and !inicial and ultimodir4 != "left"){
         indop4 = "right";
+		ultimodir4 = indop4;
+	}
     if (indop4 == "right" and MAPA_PHANTOM[k4][l4+1] != '1' and !inicial and !andoup4){
         l4++;
         pposx4 = l4*q;

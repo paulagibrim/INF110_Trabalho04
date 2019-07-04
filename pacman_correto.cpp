@@ -126,6 +126,7 @@ ALLEGRO_BITMAP *pilula = NULL;                              //PILULA QUE DÁ MAI
 ALLEGRO_BITMAP *barra = NULL;                               //ESPAÇO DAS PONTUAÇÕES ????????
 ALLEGRO_BITMAP *portal = NULL;                              //PORTAL NA TELA INICIAL
 ALLEGRO_BITMAP *splash_Screen = NULL;                       //TELA INICIAL (SPLASH)
+ALLEGRO_BITMAP *tela_final = NULL;                          //TELA FINAL
 ALLEGRO_BITMAP *pportal = NULL;                             //PORTAL IN GAME
 ALLEGRO_BITMAP *phantom1 = NULL;                            //FANTASMA1
 ALLEGRO_BITMAP *phantom2 = NULL;                            //FANTASMA2
@@ -174,7 +175,7 @@ bool sair = false;                                      //VARIÁVEL PARA SAIR
 bool inicial = true;                                    //VARIÁVEL QUE INFORMA SE ESTÁ NA TELA INICIAL (TRUE) OU NÃO (FALSE)
 bool andou = false;////////////////////////
 bool andoup = false;
-bool win = false, lose = false, fim = false, final = false;
+bool win = false, lose = false, fim = false, final = false, obrigado = false;
 int cont = 0;
 
 //**FUNÇÃO PARA INICIALIZAR O JOGO**//
@@ -262,6 +263,11 @@ int inicializa() {
 		cout << "Falha ao carregar tela inicial." << endl;
 		al_destroy_display(display);
 		return 0;
+	}
+	tela_final = al_load_bitmap("imagens/objogar.bmp");
+	if (!tela_final) {
+		cout << "Falha ao carregar objogar.bmp";
+		al_destroy_display(display);
 	}
 	ganhou = al_load_bitmap("imagens/ganhou.bmp");
 	if (!ganhou) {
@@ -912,6 +918,9 @@ void fimdejogo(){
 		final = true;
         al_draw_bitmap(perdeu, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
     }
+	if (obrigado) {
+		al_draw_bitmap(tela_final, 0, 0, 0);
+	}
 
 }
 
@@ -1002,12 +1011,13 @@ int main(int argc, char **argv){
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			if (fim == true && contFim < 30) {
 				contFim++;
-				//cout << contFim << endl;
+				if (DEBUG_MODE == true) cout << contFim << endl;
 				fimdejogo();
 			}
 			if (contFim >= 30) {
-				inicial = true;
-				contFim = 0;
+				obrigado = true;
+				win = false;
+				lose = false;
 			}
    
             if (inicial == true){
@@ -1024,30 +1034,37 @@ int main(int argc, char **argv){
     }
 
 	// DESTRUIR BITMAP
-    al_destroy_bitmap(mapa);
+	al_destroy_bitmap(mapa);
 	al_destroy_bitmap(splash_Screen);
-    al_destroy_bitmap(pacman_up);
+	al_destroy_bitmap(pacman_up);
 	al_destroy_bitmap(pacman_down);
 	al_destroy_bitmap(pacman_left);
 	al_destroy_bitmap(pacman_right);
 	al_destroy_bitmap(ball);
+	al_destroy_bitmap(phantom1);
+	al_destroy_bitmap(phantom2);
+	al_destroy_bitmap(phantom3);
+	al_destroy_bitmap(phantom4);
 
 	al_destroy_bitmap(pilula);
 	al_destroy_bitmap(portal);
+	al_destroy_bitmap(pportal);
 
 	al_destroy_bitmap(perdeu);
 	al_destroy_bitmap(ganhou);
 
 	// DESTRUIR FONTES
 	al_destroy_font(fonte_Misfits);
+	al_destroy_font(fonte_Misfits_2);
+	al_destroy_font(fonte_Misfits_3);
 
 
 	// DESTRUIR O RESTO
 	al_destroy_display(display);
 	al_destroy_sample_instance(backgroundMusica_instance);
 	al_destroy_sample(musica_Background);
-    al_destroy_timer(timer);
-    al_destroy_event_queue(event_queue);
+	al_destroy_timer(timer);
+	al_destroy_event_queue(event_queue);
 
     return 0;
 }

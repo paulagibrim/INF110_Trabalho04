@@ -78,13 +78,14 @@ const int SCREEN_H = 550;                   //TAMANHO DA TELA
 int q = 20;                                 //TAMANHO DE CADA CÉLULA DO MAPA
 int portalH, portalW;                       //POSIÇÃO DO PORTAL
 int pontos = 0, graus = 0;                  //ANIMAÇÃO DA TELA INICIAL
-int cont = 0;
+int cont = 0, contFim = 0;
 bool key[5] = { false, false, false, false, false };    //VARIÁVEL DE USO DE CADA TECLA DEFINIDA ANTERIORMENTE
 bool redraw = true;                                     //VARIÁVEL PARA REDESENHAR A TELA
 bool sair = false;                                      //VARIÁVEL PARA SAIR
 bool inicial = true;                                    //VARIÁVEL QUE INFORMA SE ESTÁ NA TELA INICIAL (TRUE) OU NÃO (FALSE)
-bool andou = false;                                     ////////////////////////
+bool andou1x = false;                                     ////////////////////////
 bool win = false, lose = false, final = false;
+
 
 
 //DEFINIÇÕES DO ALLEGRO
@@ -385,6 +386,10 @@ void verifica(){
 
 //**FUNÇÃO MOVIMENTO**//
 void movimento(personagem todos[],int n){
+    if (!andou1x){
+        ;
+    }
+    
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
     if (todos[n].direcao == "up" and MAPA[todos[n].x][todos[n].y - 1] != '1' and !inicial)
@@ -410,26 +415,32 @@ void movimento(personagem todos[],int n){
         todos[n].posicaox = todos[n].x * q;
         todos[n].andou = true;
     }
-    
-    if (direcao == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
-        indo = "left";
-    if (indo == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
-        j--;
-        posx = j*q;
-        andou = true;/////////////////
-    }
 
-
-    if (direcao == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
-        indo = "right";
-    if (indo == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
-        j++;
-        posx = j*q;
-        andou = true;///////////////////
+    if (todos[n].direcao == "right" and MAPA[todos[n].x + 1][todos[n].y] != '1' and !inicial)
+        todos[n].indo = "right";
+    if (todos[n].indo == "right" and MAPA[todos[n].x - 1][todos[n].y] != '1' and !inicial and !todos[n].andou){
+        todos[n].x--;
+        todos[n].posicaox = todos[n].x * q;
+        todos[n].andou = true;
     }
 }
+
+void fimdejogo(){
+    if (win){
+		final = true;
+        al_draw_bitmap(ganhou, 0, 0, 0); //TROCAR PARA TELA DE VITÓRIA
+
+    }
+
+    if (lose){
+		final = true;
+        al_draw_bitmap(perdeu, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
+    }
+
+}
+
 //**FUNÇÃO TECLADO**//
-void teclado(personagem todos[]){
+void teclado(personagem todos[5]){
     verifica();
     if(key[KEY_ENTER]) inicial = false;                    //DEFINE O APERTO DA TECLA ENTER (INICIALIZAÇÃO)
     if (key[KEY_UP]) todos[1].direcao = "up";              //DEFINE A DIREÇÃO PARA CIMA
@@ -437,38 +448,229 @@ void teclado(personagem todos[]){
     if (key[KEY_LEFT]) todos[1].direcao = "left";          //DEFINE A DIREÇÃO PARA A ESQUERDA
     if (key[KEY_RIGHT]) todos[1].direcao = "right";        //DEFINE A DIREÇÃO PARA A DIREITA
     
+    movimento(todos, 0);
+    movimento(todos, 1);
+    movimento(todos, 2);
+    movimento(todos, 3);
+    movimento(todos, 4);
 
     //CASO DE PORTAL
-    if (MAPA_PACMAN[i][j] == '4' and !inicial and indo == "right"){
-        j = 13;
-        i = 23;
-        posx = j*q;
-        posy = i*q;
+    if (MAPA[todos[0].x][todos[0].y] == '4' and !inicial and todos[0].indo == "right"){
+        todos[0].x = 13;
+        todos[0].y = 23;
+        todos[0].posicaox = todos[0].x * q;
+        todos[0].posicaoy = todos[0].y * q;
+        
     }
-    if (MAPA_PACMAN[i][j] == '4' and !inicial and indo == "left"){
-        j = 11;
-        i = 23;
-        posx = j*q;
-        posy = i*q;
+
+    if (MAPA[todos[0].x][todos[0].y] == '4' and !inicial and todos[0].indo == "left"){
+        todos[0].x = 11;
+        todos[0].y = 23;
+        todos[0].posicaox = todos[0].x * q;
+        todos[0].posicaoy = todos[0].y * q;
     }
-    if (MAPA_PACMAN[i][j] == '5' and !inicial and indo == "right"){
-        j = 13;
-        i = 3;
-        posx = j*q;
-        posy = i*q;
-    }
-    if (MAPA_PACMAN[i][j] == '5' and !inicial and indo == "left"){
-        j = 11;
-        i = 3;
-        posx = j*q;
-        posy = i*q;
-    }
-    if (MAPA_PACMAN[i][j] == '5' and !inicial and indo == "down"){
-        j = 12;
-        i = 3;
-        posx = j*q;
-        posy = i*q;
+
+    if (MAPA[todos[0].x][todos[0].y] == '5' and !inicial and todos[0].indo == "right"){
+        todos[0].x = 13;
+        todos[0].y = 3;
+        todos[0].posicaox = todos[0].x * q;
+        todos[0].posicaoy = todos[0].y * q;
     }
     
+    if (MAPA[todos[0].x][todos[0].y] == '5' and !inicial and todos[0].indo == "left"){
+        todos[0].x = 11;
+        todos[0].y = 3;
+        todos[0].posicaox = todos[0].x * q;
+        todos[0].posicaoy = todos[0].y * q;
+    }
+    if (MAPA[todos[0].x][todos[0].y] == '5' and !inicial and todos[0].indo == "down"){
+        todos[0].x = 12;
+        todos[0].y = 3;
+        todos[0].posicaox = todos[0].x * q;
+        todos[0].posicaoy = todos[0].y * q;
+    }    
     redraw = true;
+}
+
+//**FUNÇÃO DO INÍCIO**//
+void inicio(){
+    al_draw_bitmap(splash_Screen, 0, 0, 0);
+    graus += 5;
+    if (graus > 360) graus = 0;
+    al_draw_rotated_bitmap(portal, portalW / 2, portalH / 2, 250, 350, graus * 3.1415 / 180, 0);
+    al_draw_textf(fonte_Misfits_2, al_map_rgb(255, 255, 255), SCREEN_W/2, SCREEN_H/2 + 40, ALLEGRO_ALIGN_CENTER, "APERTE ENTER");
+    al_draw_textf(fonte_Misfits_3, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 + 80, ALLEGRO_ALIGN_CENTER, "PARA INICIAR");
+}
+
+//**FUNÇÃO DE CARREGAR E REMOVER ITENS**//
+void itens() {
+    al_draw_bitmap(mapa,0,0,0);
+
+    // CARREGAR ITENS DO MAPA
+    for (int a = 0; a < 26; a++)
+        for (int b = 0; b < 26; b++) {
+            if (MAPA[a][b] == '2') al_draw_bitmap(ball, (b * q) + 4, (a * q) + 6, 50);                  //CARREGA BOLA
+            if (MAPA[a][b] == '3') al_draw_bitmap(pilula, (b * q) + 6, (a * q), 0);                     //CARREGA PILULA
+            if (MAPA[a][b] == '4' or MAPA[a][b] == '5') al_draw_bitmap(pportal, (b * q), (a * q), 0);   //CARREGA OS PORTAIS
+        }
+    
+    al_draw_bitmap(pacman,todos[0].posicaox, todos[0].posicaoy,0);               //DESENHA O PACMAN(MORTY)
+    al_draw_bitmap(phantom1,todos[1].posicaox, todos[1].posicaoy,0);             //DESENHA O FANTASMA1
+    al_draw_bitmap(phantom2,todos[2].posicaox, todos[2].posicaoy,0);             //DESENHA O FANTASMA2
+    al_draw_bitmap(phantom3,todos[3].posicaox, todos[3].posicaoy,0);             //DESENHA O FANTASMA3
+    al_draw_bitmap(phantom4,todos[4].posicaox, todos[4].posicaoy,0);             //DESENHA O FANTASMA4
+    
+    for (int i = 0; i < 26; i++) {
+        for (int j = 0; j < 26; j++) {
+            // REMOVER ITENS DO MAPA
+            if (i == (todos[0].posicaox/20) and j == (todos[0].posicaox/20) and MAPA[i][j] == '3') {
+                MAPA[i][j] = '0';	//TIRA A PILULA DO MAPA
+                pontos += 50;
+            }
+            if (i == (todos[0].posicaox/20) and j == (todos[0].posicaox/20) && MAPA[i][j] == '2') {
+                MAPA[i][j] = '0';	//TIRA BOLINHA DO MAPA
+                pontos += 10;	    //AUMENTA A PONTUAÇÃO
+            }
+        }
+    }
+    al_draw_textf(fonte_Misfits, al_map_rgb(65, 166, 50), 80, 515, ALLEGRO_ALIGN_CENTER, "%d PONTOS", pontos );
+}
+
+
+//FUNÇÃO PRINCIPAL
+int main(int argc, char **argv){
+    if(!inicializa()) return -1; //SE NÃO INICIALIZAR, RETORNA -1 (ERRO)
+
+	al_play_sample_instance(backgroundMusica_instance); // MÚSICA EM LOOP
+
+    while(!sair){
+
+        todos[0].andou = false;
+        todos[1].andou = false;
+        todos[2].andou = false;
+        todos[3].andou = false;
+        todos[4].andou = false;
+        
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(event_queue, &ev);
+
+        if(ev.type == ALLEGRO_EVENT_TIMER){   
+            fimdejogo();
+            teclado(todos);
+            verifica();
+            movimento(todos, 1);
+            if (cont>=20) movimento(todos,2);
+            if (cont >=50) movimento(todos,3);
+            if (cont >=70) movimento(todos,4);
+            cont++;
+        }if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+            break;
+        }else if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
+            //CASOS
+            switch(ev.keyboard.keycode){
+            case ALLEGRO_KEY_ENTER:
+                key[KEY_ENTER] = true;
+                break;
+
+            case ALLEGRO_KEY_UP:
+                key[KEY_UP] = true;
+                break;
+
+            case ALLEGRO_KEY_DOWN:
+                key[KEY_DOWN] = true;
+                break;
+
+            case ALLEGRO_KEY_LEFT:
+                key[KEY_LEFT] = true;
+                break;
+
+            case ALLEGRO_KEY_RIGHT:
+                key[KEY_RIGHT] = true;
+                break;
+            }
+        }
+        else if(ev.type == ALLEGRO_EVENT_KEY_UP){
+            //CASOS
+            switch(ev.keyboard.keycode){
+            case ALLEGRO_KEY_ENTER:
+                key[KEY_ENTER] = false;
+                break;
+
+            case ALLEGRO_KEY_UP:
+                key[KEY_UP] = false;
+                break;
+
+            case ALLEGRO_KEY_DOWN:
+                key[KEY_DOWN] = false;
+                break;
+
+            case ALLEGRO_KEY_LEFT:
+                key[KEY_LEFT] = false;
+                break;
+
+            case ALLEGRO_KEY_RIGHT:
+                key[KEY_RIGHT] = false;
+                break;
+
+            case ALLEGRO_KEY_ESCAPE:
+                sair = true;
+                break;
+            }
+        }
+
+        if(redraw && al_is_event_queue_empty(event_queue)){
+            redraw = false;
+
+			al_clear_to_color(al_map_rgb(0, 0, 0));
+			if (final == true && contFim < 30) {
+				contFim++;
+				//cout << contFim << endl;
+				fimdejogo();
+			}
+			if (contFim >= 30) {
+				inicial = true;
+				contFim = 0;
+			}
+   
+            if (inicial == true){
+				inicio();
+				final = false;
+            }else {
+                itens();
+                fimdejogo();
+            }
+			if (final == true) final = true;
+
+            al_flip_display();
+        }
+    }
+
+	// DESTRUIR BITMAP
+    al_destroy_bitmap(mapa);
+	al_destroy_bitmap(splash_Screen);
+    al_destroy_bitmap(pacman);
+	al_destroy_bitmap(phantom1);
+	al_destroy_bitmap(phantom2);
+	al_destroy_bitmap(phantom3);
+    al_destroy_bitmap(phantom4);
+	al_destroy_bitmap(ball);
+
+	al_destroy_bitmap(pilula);
+	al_destroy_bitmap(portal);
+
+	al_destroy_bitmap(perdeu);
+	al_destroy_bitmap(ganhou);
+
+	// DESTRUIR FONTES
+	al_destroy_font(fonte_Misfits);
+
+
+	// DESTRUIR O RESTO
+	al_destroy_display(display);
+	al_destroy_sample_instance(backgroundMusica_instance);
+	al_destroy_sample(musica_Background);
+    al_destroy_timer(timer);
+    al_destroy_event_queue(event_queue);
+
+    return 0;
 }

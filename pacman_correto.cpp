@@ -28,7 +28,7 @@
 using namespace std;
 
 //VARIÁVEIS
-const float FPS = 8;                //DEFINIÇÃO DE FPS
+const float FPS = 6;                //DEFINIÇÃO DE FPS
 const int SCREEN_W = 500;           //TAMANHO DA TELA
 const int SCREEN_H = 550;           //TAMANHO DA TELA
 bool movimento = false;             //VARIÁVEL DE MOVIMENTO (ESTÁ MOVENDO OU NÃO)
@@ -530,7 +530,7 @@ void fantasma1(){
     }
 
     //CASO DE PORTAL
-    if (MAPA_PHANTOM[k][l] == '4' and !inicial and indo == "right"){
+    /* if (MAPA_PHANTOM[k][l] == '4' and !inicial and indo == "right"){
         l = 13;
         k = 23;
         pposx1 = l*q;
@@ -559,7 +559,7 @@ void fantasma1(){
         k = 3;
         pposx1 = l*q;
         pposy1 = k*q;
-    } 
+    }  */
 }
 void fantasma2(){
     int movimento = rand();
@@ -614,7 +614,7 @@ void fantasma2(){
     }
 
     //CASO DE PORTAL
-    if (MAPA_PHANTOM[k2][l2] == '4' and !inicial and indop2 == "right"){
+    /* if (MAPA_PHANTOM[k2][l2] == '4' and !inicial and indop2 == "right"){
         l2 = 13;
         k2 = 23;
         pposx2 = l2*q;
@@ -643,7 +643,7 @@ void fantasma2(){
         k2 = 3;
         pposx2 = l2*q;
         pposy2 = k2*q;
-    } 
+    } */ 
 }
 void fantasma3(){
     int movimento = rand();
@@ -698,7 +698,7 @@ void fantasma3(){
     }
 
     //CASO DE PORTAL
-    if (MAPA_PHANTOM[k3][l3] == '4' and !inicial and indop3 == "right"){
+/*     if (MAPA_PHANTOM[k3][l3] == '4' and !inicial and indop3 == "right"){
         l3 = 13;
         k3 = 23;
         pposx3 = l3*q;
@@ -727,7 +727,7 @@ void fantasma3(){
         k3 = 3;
         pposx3 = l3*q;
         pposy3 = k3*q;
-    } 
+    }  */
 }
 void fantasma4(){
     int movimento = rand();
@@ -781,7 +781,7 @@ void fantasma4(){
         pposx4 = l4*q;
         andoup4 = true;///////////////////
     }
-
+/* 
     //CASO DE PORTAL
     if (MAPA_PHANTOM[k4][l4] == '4' and !inicial and indop4 == "right"){
         l4 = 13;
@@ -812,7 +812,7 @@ void fantasma4(){
         k4 = 3;
         pposx4 = l4*q;
         pposy4 = k4*q;
-    } 
+    }  */
 }
 
 //**FUNÇÃO DO INÍCIO**//

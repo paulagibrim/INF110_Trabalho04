@@ -28,7 +28,7 @@
 using namespace std;
 
 //VARIÁVEIS
-const float FPS = 6;                //DEFINIÇÃO DE FPS
+const float FPS = 10;                //DEFINIÇÃO DE FPS
 const int SCREEN_W = 500;           //TAMANHO DA TELA
 const int SCREEN_H = 550;           //TAMANHO DA TELA
 bool movimento = false;             //VARIÁVEL DE MOVIMENTO (ESTÁ MOVENDO OU NÃO)
@@ -91,7 +91,7 @@ char MAPA_PHANTOM[26][26] =
     "1000110001110111000110001",
     "1110111101000001011110111",
     "1000000001001001000000001",
-    "1011111101110111011111101",
+    "1011111101111111011111101",
     "1011100000000000000011101",
     "1000001111110111111000001",
     "1111101110000000111011111",
@@ -162,7 +162,10 @@ string direcaop4, indop4;
 bool andoup4;
 int k4 = 10, l4 = 12;
 int pposy4 = l4*q, pposx4 = k4*q;
-
+int contsuavisacaoup = 19;
+int contsuavisacaodown = 19;
+int contsuavisacaoleft = 19;
+int contsuavisacaoright = 19;
 //*//
 string ultimodir, ultimodir2, ultimodir3, ultimodir4;
 //*//
@@ -407,37 +410,86 @@ void teclado(){
 
     //SE A DIREÇÃO FOR XX E TIVER ESPAÇO PARA ANDAR NESSA DIREÇÃO E NÃO ESTIVER NA TELA INICIAL
     //ELE ANDA NAQUELA DIREÇÃO
-    if (direcao == "up" and MAPA_PACMAN[i-1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
+    if (posx%20==0 and posy%20==0){
+        contsuavisacaoup =19;
+        contsuavisacaoright = 19;
+        contsuavisacaoleft = 19;
+        contsuavisacaodown = 19;
+    }
+    if (direcao == "up" and MAPA_PACMAN[i-1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and posx%20==0 and posy%20==0)
         indo = "up";
     if (indo == "up" and MAPA_PACMAN[i-1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
+        if (contsuavisacaoup==19)
         i--;
-        posy = i*q;
+        posy = i*q + contsuavisacaoup;
+        contsuavisacaoup--;
+        if (contsuavisacaoup == -1)
+        contsuavisacaoup = 19;
         andou = true; ////////
     }
+    else if (contsuavisacaoup != 19 and andou == false){
+        posy = i*q + contsuavisacaoup;
+        contsuavisacaoup--;
+        andou = true;
+        if (contsuavisacaoup == -1)
+        contsuavisacaoup = 19;
+    }
 
-    if (direcao == "down" and MAPA_PACMAN[i+1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
+    if (direcao == "down" and MAPA_PACMAN[i+1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial  and posx%20==0 and posy%20==0)
         indo = "down";
     if (indo == "down" and MAPA_PACMAN[i+1][j] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
+        if (contsuavisacaodown == 19)
         i++;
-        posy = i*q;
+        posy = i*q-contsuavisacaodown;
+        contsuavisacaodown--;
+        if (contsuavisacaodown == -1)
+        contsuavisacaodown = 19;
         andou = true;/////////
     }
+    else if (contsuavisacaodown != 19 and andou == false){
+        contsuavisacaodown--;
+        posy = i*q - contsuavisacaodown;
+        andou = true;
+        if (contsuavisacaodown == -1)
+        contsuavisacaodown = 19;
+    }
     
-    if (direcao == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
+    if (direcao == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial  and posx%20==0 and posy%20==0)
         indo = "left";
     if (indo == "left" and MAPA_PACMAN[i][j-1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
+        if (contsuavisacaoleft == 19)
         j--;
-        posx = j*q;
+        posx = j*q+contsuavisacaoleft;
+        contsuavisacaoleft--;
+        if (contsuavisacaoleft == -1)
+        contsuavisacaoleft = 19;
         andou = true;/////////////////
     }
-
-
-    if (direcao == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial)
+    else if (contsuavisacaoleft != 19 and andou == false){
+        contsuavisacaoleft--;
+        posx = j*q+contsuavisacaoleft;
+        andou = true;
+        if (contsuavisacaoleft == -1)
+        contsuavisacaoleft = 19;
+    }
+    
+    if (direcao == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and posx%20==0 and posy%20==0)
         indo = "right";
     if (indo == "right" and MAPA_PACMAN[i][j+1] != '1' and MAPA_PACMAN[i-1][j] != '6' and !inicial and !andou){
+        if (contsuavisacaoright == 19)
         j++;
-        posx = j*q;
+        posx = j*q-contsuavisacaoright;
+        contsuavisacaoright--;
+        if (contsuavisacaoright == -1)
+        contsuavisacaoright == 19;
         andou = true;///////////////////
+    }
+    else if (contsuavisacaoright != 19 and andou == false){
+        contsuavisacaoright--;
+        posx = j*q-contsuavisacaoright;
+        andou = true;
+        if (contsuavisacaoright == -1)
+        contsuavisacaoright = 19;
     }
 
     //CASO DE PORTAL

@@ -28,7 +28,7 @@
 using namespace std;
 
 //VARIÁVEIS
-const float FPS = 6;                //DEFINIÇÃO DE FPS
+const float FPS = 8;                //DEFINIÇÃO DE FPS
 const int SCREEN_W = 500;           //TAMANHO DA TELA
 const int SCREEN_H = 550;           //TAMANHO DA TELA
 bool movimento = false;             //VARIÁVEL DE MOVIMENTO (ESTÁ MOVENDO OU NÃO)
@@ -114,8 +114,13 @@ ALLEGRO_DISPLAY *display = NULL;                            //DISPLAY (TELA)
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;                    //FILA DE EVENTOS
 
 ALLEGRO_TIMER *timer = NULL;                                //TEMPORIZADOR
+
 ALLEGRO_BITMAP *mapa = NULL;                                //MAPA
-ALLEGRO_BITMAP *pacman = NULL;                              //PACMAN (MORTY)
+ALLEGRO_BITMAP *pacman_up = NULL;                           //PACMAN (MORTY)
+ALLEGRO_BITMAP *pacman_down = NULL;
+ALLEGRO_BITMAP *pacman_left = NULL;
+ALLEGRO_BITMAP *pacman_right = NULL;
+
 ALLEGRO_BITMAP *ball = NULL;                                //BOLINHA (COMÍVEL)
 ALLEGRO_BITMAP *pilula = NULL;                              //PILULA QUE DÁ MAIS PONTOS
 ALLEGRO_BITMAP *barra = NULL;                               //ESPAÇO DAS PONTUAÇÕES ????????
@@ -274,10 +279,6 @@ int inicializa() {
 	}
 	portalW = al_get_bitmap_width(portal);
 	portalH = al_get_bitmap_height(portal);
-
-    if (key[KEY_ENTER]){
-        al_destroy_bitmap(splash_Screen);           //SE APERTAR ENTER, DESTROI SPLASHSCREEN
-    } 
     
     mapa = al_load_bitmap("map.bmp");               //CARREGAR O MAPA
     if(!mapa){
@@ -287,13 +288,31 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    pacman = al_load_bitmap("imagens/pac.tga");     //CARREGAR O PACMAN (MORTY)
-    if(!pacman){
-        cout << "Falha ao carregar o pacman!" << endl;
+	pacman_up = al_load_bitmap("imagens/Pacman/MortyBigUp.tga");     //CARREGAR O PACMAN (MORTY)
+    if(!pacman_up){
+        cout << "Falha ao carregar o pacman_up!" << endl;
         al_destroy_display(display);
         return 0;
     }
-    al_draw_bitmap(pacman,posx,posy,0);
+    //al_draw_bitmap(pacman_up,posx,posy,0);
+	pacman_down = al_load_bitmap("imagens/Pacman/MortyBigDown.tga");     //CARREGAR O PACMAN (MORTY)
+	if (!pacman_up) {
+		cout << "Falha ao carregar o pacman_down!" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
+	pacman_left = al_load_bitmap("imagens/Pacman/MortyBigLeft.tga");     //CARREGAR O PACMAN (MORTY)
+	if (!pacman_up) {
+		cout << "Falha ao carregar o pacman_left!" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
+	pacman_right = al_load_bitmap("imagens/Pacman/MortyBigRight.tga");     //CARREGAR O PACMAN (MORTY)
+	if (!pacman_up) {
+		cout << "Falha ao carregar o pacman_right!" << endl;
+		al_destroy_display(display);
+		return 0;
+	}
 
     ball = al_load_bitmap("imagens/bolinha.tga");   //CARREGAR A BOLINHA
     if(!ball){
@@ -758,6 +777,7 @@ void inicio(){
 
 //**FUNÇÃO DE CARREGAR E REMOVER ITENS**//
 void itens() {
+
     al_draw_bitmap(mapa,0,0,0);
 
     // CARREGAR ITENS DO MAPA
@@ -768,11 +788,20 @@ void itens() {
             if (MAPA_PACMAN[a][b] == '4' or MAPA_PACMAN[a][b] == '5') al_draw_bitmap(pportal, (b * q), (a * q), 0);   //CARREGA OS PORTAIS
         }
     
-    al_draw_bitmap(pacman,posx,posy,0);             //DESENHA O PACMAN(MORTY)
-    al_draw_bitmap(phantom1, pposx1, pposy1, 0);
+	//DESENHA O PACMAN(MORTY)
+	al_draw_bitmap(pacman_up, posx, posy, 0);
+	if (indo == "up") al_draw_bitmap(pacman_up, posx, posy, 0);
+    if (indo == "down") al_draw_bitmap(pacman_down,posx,posy,0);             
+	if (indo == "left") al_draw_bitmap(pacman_left, posx, posy, 0);
+	if (indo == "right") al_draw_bitmap(pacman_right, posx, posy, 0);
+
+
+	//DESENHA OS FANTASMAS
+    al_draw_bitmap(phantom1, pposx1, pposy1, 0);  
     al_draw_bitmap(phantom2, pposx2, pposy2, 0);
     al_draw_bitmap(phantom3, pposx3, pposy3, 0);
     al_draw_bitmap(phantom4, pposx4, pposy4, 0);
+
     for (int i = 0; i < 26; i++) {
         for (int j = 0; j < 26; j++) {
             // REMOVER ITENS DO MAPA
@@ -830,14 +859,12 @@ void verifica(){
 
 void fimdejogo(){
     if (win){
-        //inicial = true;
 		final = true;
         al_draw_bitmap(ganhou, 0, 0, 0); //TROCAR PARA TELA DE VITÓRIA
 
     }
 
     if (lose){
-        //inicial = true;
 		final = true;
         al_draw_bitmap(perdeu, 0, 0, 0); //TROCAR PARA TELA DE DERROTA
     }
@@ -851,6 +878,7 @@ int main(int argc, char **argv){
 	al_play_sample_instance(backgroundMusica_instance); // MÚSICA EM LOOP
 
     while(!sair){
+
         andou = false;
         andoup = false;
         andoup2 = false;
@@ -954,7 +982,10 @@ int main(int argc, char **argv){
 	// DESTRUIR BITMAP
     al_destroy_bitmap(mapa);
 	al_destroy_bitmap(splash_Screen);
-    al_destroy_bitmap(pacman);
+    al_destroy_bitmap(pacman_up);
+	al_destroy_bitmap(pacman_down);
+	al_destroy_bitmap(pacman_left);
+	al_destroy_bitmap(pacman_right);
 	al_destroy_bitmap(ball);
 
 	al_destroy_bitmap(pilula);
